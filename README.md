@@ -11,5 +11,5 @@ Open `index.html` in a browser.
 3. The site is live at `https://<user>.github.io/<repo>/` after a minute.
 
 ## Edit
-- Brand tokens (colours, pixel presets, emphasis, gallery lists) are in the `BASE` and `PRESETS` objects inside `index.html`.
+- This is a read-only style guide. To change the brand, edit the `BASE` and `PRESETS` objects inside `index.html` (colours, pixel presets, emphasis, gallery lists) and commit.
 - Images live in `gallery/`. Add a file there and list it in the cluster's `gallery` array.
