@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>EF Brand System</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300..800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a graphics standards manual. White paper, black type, a 12-column grid with a
+   left margin column (columns 1–3) for section numbers and notes, content in columns 4–12.
+   Brand colour appears only on specimen plates and figures; the chrome itself stays neutral. */
+:root{
+  --paper:#FFFFFF; --ink:#141414; --grey:#6B6B6B; --faint:#DADADA; --wash:#F3F3F1; --strong:#141414;
+  --b-dark:#1E1F2E; --b-light:#F2F1EE; --b-ink:#1E1F2E; --b-ondark:#F4F3F0;
+  --b-primary:#9E69AC; --b-accent:#0DAFD2; --b-text:#1E1F2E;
+  --f-sans:'Funnel Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+.page{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px}
+.c-margin{grid-column:1/4;min-width:0}
+.c-main{grid-column:4/13;min-width:0}
+@media (max-width:860px){.c-margin,.c-main{grid-column:1/-1}}
+.small{font-size:12px;line-height:1.45}
+.grey{color:var(--grey)}
+.label{font-size:12px;font-weight:600;letter-spacing:.01em}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--ink)}
+.bar .page{display:flex;align-items:center;gap:18px;padding-block:12px;flex-wrap:wrap}
+.lockup{display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;line-height:1.1}
+.lockup svg{width:14px;height:22px;flex:none}
+.lockup span{font-family:var(--f-mono);font-size:11px}
+.lockup b{display:block;font-weight:500;font-size:13px}
+.lockup svg.eflogo{width:auto;height:32px}
+.switch{display:flex;gap:2px 16px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.switch button{border:none;background:none;padding:6px 0;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;color:var(--grey);border-bottom:2px solid transparent}
+.switch button:hover{color:var(--ink)}
+.switch button[aria-pressed="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--strong)}
+.toggle{display:flex;align-items:center;gap:8px;border:none;background:none;padding:4px 0;cursor:pointer;font-size:12px;color:var(--ink)}
+.toggle .lbl{color:var(--grey)}
+.toggle .lbl.on{color:var(--ink);font-weight:600}
+.toggle .track{position:relative;width:40px;height:22px;border:1px solid var(--ink);background:var(--wash)}
+.toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--ink);transition:transform .18s ease}
+.toggle[aria-checked="true"] .knob{transform:translateX(18px)}
+@media (prefers-reduced-motion:reduce){.toggle .knob{transition:none}}
+body{transition:background-color .2s ease,color .2s ease}
+@media (prefers-reduced-motion:reduce){body{transition:none}}
+.switch i{width:10px;height:10px;display:inline-block;background:linear-gradient(135deg,var(--c1) 50%,var(--c2) 50%)}
+.switch .add{border:1px solid var(--ink);padding:4px 9px;color:var(--ink)}
+
+/* cover */
+.cover{padding-block:44px 64px;border-bottom:1px solid var(--ink)}
+.cover .meta-col{display:flex;flex-direction:column;gap:22px}
+.toc{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.toc li{border-bottom:1px solid var(--faint)}
+.toc button{all:unset;cursor:pointer;display:grid;grid-template-columns:36px 1fr;gap:6px;padding:7px 0;font-size:13px;width:100%}
+.toc button:hover{color:var(--grey)}
+.toc button:focus-visible{outline:2px solid var(--ink)}
+.cover-title{font-size:13px;font-weight:600;margin:0 0 14px}
+h1{font-weight:500;font-size:clamp(44px,7vw,96px);line-height:.95;letter-spacing:-.035em;margin:18px 0 18px;text-wrap:balance}
+.cover p.lede{font-size:18px;line-height:1.45;max-width:46ch;margin:0}
+.fig{margin:0}
+.fig .frame{position:relative;border:1px solid var(--ink);overflow:hidden}
+.fig canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.cap{display:grid;grid-template-columns:auto 1fr;gap:12px;margin-top:8px;font-size:12px;color:var(--grey)}
+.cap b{color:var(--ink);font-weight:600}
+.cover .frame{aspect-ratio:16/7}
+.inherit{display:inline-block;margin-top:18px;font-family:var(--f-mono);font-size:12px;border:1px solid var(--ink);padding:5px 9px}
+
+/* sections */
+.sec{padding-block:20px 72px}
+.sh{border-top:3px solid var(--strong);padding-top:10px;margin-bottom:34px;align-items:baseline}
+.sh .num{grid-column:1/4;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.sh h2{grid-column:4/10;margin:0;font-weight:500;font-size:clamp(28px,3.6vw,42px);line-height:1.05;letter-spacing:-.025em}
+.sh .run{grid-column:10/13;text-align:right;font-size:12px;color:var(--grey)}
+@media (max-width:860px){.sh .num{grid-column:1/4}.sh h2{grid-column:4/13}.sh .run{display:none}}
+.intro{font-size:14px;line-height:1.55;margin:0 0 24px;max-width:34ch}
+@media (max-width:860px){.intro{max-width:60ch}}
+
+/* table */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14px}
+th,td{text-align:left;padding:10px 12px 10px 0;border-bottom:1px solid var(--faint);vertical-align:top}
+thead th{border-bottom:1px solid var(--ink);font-size:12px;font-weight:600}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;white-space:nowrap;border:1px solid var(--ink)}
+.pill.own{background:var(--ink);color:var(--paper)}
+.pill.inh{color:var(--grey);border-color:var(--faint)}
+.pill.fixed{border-style:dashed}
+
+/* colour */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:28px 20px}
+.sw{min-width:0}
+.sw label{display:block;aspect-ratio:4/3;background:var(--c);cursor:pointer;position:relative;border:1px solid rgba(0,0,0,.12)}
+.sw input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer}
+.sw .k{font-weight:600;font-size:14px;margin-top:10px;display:flex;justify-content:space-between;gap:8px}
+.sw .k span{font-weight:400;font-size:11px;color:var(--grey)}
+.sw .r{font-size:12px;color:var(--grey);margin-bottom:8px}
+.spec{display:grid;grid-template-columns:34px 1fr;gap:2px 8px;font-family:var(--f-mono);font-size:11.5px;border-top:1px solid var(--ink);padding-top:6px}
+.spec dt{color:var(--grey)}.spec dd{margin:0}
+.spec button{all:unset;cursor:pointer;border-bottom:1px dotted var(--grey)}
+.spec button:focus-visible{outline:2px solid var(--ink)}
+.chart{display:flex;height:28px;margin-top:8px;border:1px solid var(--ink)}
+.chart span{flex:1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.btn{border:1px solid var(--ink);background:var(--paper);padding:7px 12px;cursor:pointer;font-size:13px}
+.btn:hover{background:var(--wash)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--ink);opacity:.85}
+
+/* type */
+.specimens{display:grid;gap:0;border-top:1px solid var(--ink)}
+.specimen{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:20px;padding:20px 0;border-bottom:1px solid var(--faint)}
+.specimen .aa{font-size:clamp(64px,9vw,120px);line-height:.85;letter-spacing:-.04em}
+.specimen .set{font-size:20px;line-height:1.35;word-break:break-word}
+@media (max-width:640px){.specimen{grid-template-columns:1fr}}
+.plates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:34px}
+@media (max-width:860px){.plates{grid-template-columns:1fr}}
+.plate{outline:1px solid var(--faint);background:var(--b-dark);color:var(--b-ondark);padding:22px;min-height:190px;display:flex;flex-direction:column;gap:12px;justify-content:space-between}
+.plate h3{margin:0;font-weight:700;font-size:clamp(22px,2.4vw,28px);line-height:1.15;letter-spacing:-.015em}
+.hl-marker .hx{background:var(--b-accent);color:var(--b-dark);padding:0 .14em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hl-rule .hx{box-shadow:inset 0 -.16em 0 var(--b-accent)}
+.hl-bar .hx::before{content:"";display:inline-block;width:.16em;height:.86em;background:var(--b-accent);margin-right:.3em;vertical-align:-.06em}
+.plate-cap{display:flex;justify-content:space-between;font-size:12px;margin-top:8px}
+.plate-cap .def{font-weight:600}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px}
+.tg{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--ink)}
+.tg.solid{background:var(--ink);color:var(--paper)}
+
+/* generator */
+.gen{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px}
+.ctrl{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.ctrl .g{padding:12px 0;border-bottom:1px solid var(--faint);display:grid;gap:8px}
+.ctrl .lr{display:flex;justify-content:space-between;font-size:12px;font-weight:600}
+.ctrl .lr b{font-weight:400;font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.seg button{border:1px solid var(--faint);background:var(--paper);padding:6px 8px;text-align:left;cursor:pointer;font-size:12px}
+.seg button:hover{border-color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.seg button .star{float:right}
+.seg.five{grid-template-columns:repeat(5,1fr)}
+.seg.five button{text-align:center;padding:6px 0}
+.seg.two{grid-template-columns:auto auto;display:inline-grid}
+input[type=range]{width:100%;accent-color:var(--ink)}
+select{width:100%;background:var(--paper);border:1px solid var(--faint);padding:6px 8px}
+.ctrl .acts{padding-top:14px;display:grid;gap:6px}
+.stage{display:flex;align-items:center;justify-content:center;padding:28px;background:var(--wash);min-width:0;min-height:280px}
+.stage canvas{max-width:100%;max-height:520px;image-rendering:pixelated;cursor:crosshair;border:1px solid var(--faint)}
+@media (max-width:860px){.gen{grid-template-columns:1fr}}
+
+/* imagery */
+.rules{border-top:1px solid var(--ink)}
+.rules .rl{display:grid;grid-template-columns:140px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--faint)}
+.rules .rl p{margin:0;max-width:62ch}
+@media (max-width:640px){.rules .rl{grid-template-columns:1fr;gap:4px}}
+.voice{margin-top:40px}
+.voice q{display:block;font-weight:500;font-size:clamp(26px,3.6vw,44px);line-height:1.1;letter-spacing:-.025em;quotes:none;max-width:22ch}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
+.gallery figure:first-child{grid-column:1/-1}
+.gallery button{all:unset;display:block;cursor:zoom-in;width:100%}
+.gallery button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.gallery img{display:block;width:100%;aspect-ratio:7/3;object-fit:cover;border:1px solid var(--faint);background:var(--wash)}
+.g169 img{aspect-ratio:16/9}
+/* slideshow */
+.ss-row + .ss-row{margin-top:56px}
+.ss-meta{border-top:1px solid var(--ink);padding-top:8px}
+.ss-meta .label{display:block}
+.ss-stage{position:relative;border:1px solid var(--ink);background:var(--wash)}
+.ss-big{all:unset;display:block;width:100%;cursor:zoom-in}
+.ss-big:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.ss-big img{display:block;width:100%;aspect-ratio:var(--ar,7/3);object-fit:cover;transition:opacity .2s ease}
+.ss.tall .ss-big img{width:auto;max-width:100%;height:min(72vh,720px);margin:0 auto}
+.ss.tall .thumbs{grid-auto-columns:96px;justify-content:start}
+.ss-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.ss-nav:hover{background:var(--wash)}
+.ss-nav.prev{left:12px}.ss-nav.next{right:12px}
+.ss .cap{grid-template-columns:auto 1fr auto}
+.ss .cap .cnt{font-family:var(--f-mono);color:var(--grey)}
+.thumbs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(104px,1fr);gap:8px;overflow-x:auto;margin-top:14px;padding-bottom:6px}
+.thumbs button{all:unset;cursor:pointer;display:block;outline:1px solid var(--faint);outline-offset:0;opacity:.6;transition:opacity .15s ease}
+.thumbs button:hover{opacity:1}
+.thumbs button[aria-current="true"]{opacity:1;outline:2px solid var(--strong);outline-offset:2px}
+.thumbs button:focus-visible{outline:2px solid var(--ink);outline-offset:2px;opacity:1}
+.thumbs img{display:block;width:100%;aspect-ratio:var(--ar,7/3);object-fit:cover}
+@media (prefers-reduced-motion:reduce){.ss-big img,.thumbs button{transition:none}}
+@media (max-width:760px){.gallery{grid-template-columns:1fr}}
+.empty{border-top:1px solid var(--ink);padding-top:14px;margin:0;color:var(--grey);max-width:60ch}
+dialog#lb{max-width:min(1400px,calc(100vw - 32px));padding:16px}
+#lb img{display:block;max-width:100%;max-height:74vh;margin:0 auto}
+#lb .actions{justify-content:flex-end;margin-top:12px}
+
+/* templates */
+.tpl-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:28px 20px}
+.tpl{position:relative;container-type:inline-size;overflow:hidden;border:1px solid var(--ink)}
+.tpl canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.tpl .in{position:absolute;inset:0;padding:6cqw 6.5cqw;display:flex;flex-direction:column;align-items:flex-start;gap:2.4cqw}
+.tpl .t{font-weight:600;letter-spacing:-.03em;line-height:.98;font-size:7.4cqw;max-width:62%;text-wrap:balance}
+.tpl .s{font-size:1.9cqw;max-width:52%}
+.tpl .lk{display:flex;align-items:center;gap:1.2cqw;font-family:var(--f-mono);line-height:1.1}
+.tpl .lk svg{width:1.8cqw;height:2.9cqw}
+.tpl .lk span{font-size:1.25cqw}.tpl .lk b{display:block;font-weight:500;font-size:1.7cqw}
+.tpl .lk svg.eflogo{width:auto;height:4.6cqw}
+.r169{aspect-ratio:16/9}.rsq{aspect-ratio:1/1}.rog{aspect-ratio:1200/630}
+.rsq .in{padding:9cqw;gap:4cqw}.rsq .t{font-size:11cqw;max-width:90%}.rsq .s{font-size:3.6cqw;max-width:90%}
+.rsq .lk svg{width:3.4cqw;height:5.4cqw}.rsq .lk span{font-size:2.4cqw}.rsq .lk b{font-size:3.2cqw}
+.rsq .lk svg.eflogo{height:8.5cqw}
+.side{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:28px 20px}
+.side .tpl{cursor:pointer}
+@media (max-width:760px){.tpl-grid{grid-template-columns:1fr}}
+
+/* overview (Ethereum Foundation front page) */
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 22px;font-size:13px;border-top:1px solid var(--ink);padding-top:10px}
+.facts dt{color:var(--grey)}.facts dd{margin:0}
+.ov-pal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:28px}
+.ov-pal div{min-width:0}
+.ov-pal span{display:block;height:56px;background:var(--c);border:1px solid var(--faint)}
+.ov-pal p{margin:6px 0 0;font-size:12px}
+.ov-pal code{font-family:var(--f-mono);font-size:11px;color:var(--grey)}
+.ov-imgs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:20px}
+.ov-imgs img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--faint)}
+@media (max-width:640px){.ov-pal,.ov-imgs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* tokens */
+pre{margin:0;max-height:440px;overflow:auto;background:var(--wash);border-top:1px solid var(--ink);padding:16px;font-family:var(--f-mono);font-size:12px;line-height:1.55}
+
+dialog{background:var(--paper);color:var(--ink);border:1px solid var(--ink);padding:0;max-width:min(440px,calc(100vw - 32px));width:100%}
+dialog::backdrop{background:rgba(20,20,20,.35)}
+dialog form{display:grid;gap:12px;padding:22px}
+dialog h3{margin:0;font-weight:500;font-size:24px;letter-spacing:-.02em;border-top:3px solid var(--ink);padding-top:8px}
+dialog label{display:grid;gap:4px;font-size:12px;font-weight:600}
+dialog input[type=text]{border:1px solid var(--ink);padding:8px;font-weight:400}
+dialog .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+dialog input[type=color]{width:100%;height:38px;border:1px solid var(--ink);background:none;padding:2px}
+.err{color:#B3261E;font-size:12px;min-height:1em}
+footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;color:var(--grey)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;font-size:13px;z-index:60}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="eth" viewBox="0 0 24 38"><path fill="currentColor" d="M12 0 24 19.4 12 26.2 0 19.4Z"/><path fill="currentColor" opacity=".75" d="M12 28.6 24 21.8 12 38 0 21.8Z"/></symbol></svg>
+
+<header class="bar">
+  <div class="page">
+    <a class="lockup" id="lockup" href="#base" aria-label="Ethereum Foundation"></a>
+    <nav class="switch" id="switch" aria-label="Brand"></nav>
+    <button class="toggle" id="modeSw" role="switch" aria-checked="false" aria-label="Dark mode">
+      <span class="lbl" id="lblLight">Light</span><span class="track"><span class="knob"></span></span><span class="lbl" id="lblDark">Dark</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="cover"><div class="page row">
+    <div class="c-margin meta-col">
+      <div>
+        <p class="cover-title">Graphics Standards Manual</p>
+        <p class="small grey" style="margin:0">Ethereum Foundation<br>Clusters: Protocol, Access Layer, Public Sector<br>Edition 1 · November 2026</p>
+      </div>
+      <div>
+        <p class="label" style="margin:0 0 6px">Contents</p>
+        <ol class="toc" id="toc"></ol>
+      </div>
+    </div>
+    <div class="c-main">
+      <figure class="fig" id="heroFig"><div class="frame" id="heroFrame"><canvas id="heroCv"></canvas></div>
+        <figcaption class="cap"><b>Figure 0.1</b><span id="heroCap"></span></figcaption></figure>
+      <div class="small grey" id="heroEyebrow" style="margin-top:36px">Base brand</div>
+      <h1 id="heroTitle">Ethereum Foundation</h1>
+      <p class="lede" id="heroText"></p>
+      <div class="inherit" id="heroInherit"></div>
+    </div>
+  </div></section>
+
+  <div id="overview" hidden></div>
+
+
+  <section class="sec" id="s2"><div class="page">
+    <div class="sh row"><div class="num">1.0</div><h2>Colour</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin">
+        <p class="intro">Click a colour block to change it. A change to the base flows into every cluster that inherits that colour.</p>
+        <p class="small grey">Hex values for the clusters are estimates taken from existing materials. Replace them with the official values.</p>
+      </div>
+      <div class="c-main">
+        <div class="swatches" id="swatches"></div>
+        <p class="label" style="margin:36px 0 0">1.1 Chart palette</p>
+        <div class="chart" id="chart"></div>
+        <div class="actions"><button class="btn" id="resetColors">Reset this brand's colours</button></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec" id="s3"><div class="page">
+    <div class="sh row"><div class="num">2.0</div><h2>Typography</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin"><p class="intro">Two families for the whole Foundation. Funnel Sans sets headings and text; IBM Plex Mono sets the lockup and tags. Set flush left, ragged right.</p></div>
+      <div class="c-main">
+        <div class="specimens">
+          <div class="specimen"><div><div class="aa" style="font-weight:600">Aa</div><p class="small grey" style="margin:10px 0 0">Funnel Sans Semibold / Medium<br>Headings</p></div><div class="set" style="font-weight:600">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 &amp;—.,:;</div></div>
+          <div class="specimen"><div><div class="aa" style="font-weight:400">Aa</div><p class="small grey" style="margin:10px 0 0">Funnel Sans Regular<br>Text, 15/22</p></div><div class="set" style="font-weight:400;font-size:17px">Ethereum reaches users through wallets, applications and transaction infrastructure. Defaults decide what reaches them.</div></div>
+          <div class="specimen"><div><div class="aa mono" style="font-size:clamp(52px,7vw,92px)">Aa</div><p class="small grey" style="margin:10px 0 0">IBM Plex Mono Regular<br>Lockup, tags, data</p></div><div class="set mono" style="font-size:15px">ethereum foundation<br>access layer<br>IN PRODUCTION · PUBLIC ALPHA</div></div>
+        </div>
+        <p class="label" style="margin:40px 0 0">2.1 Emphasis</p>
+        <p class="small grey" style="margin:4px 0 0;max-width:62ch">Three variants, shared by every brand. Each cluster picks one as its default.</p>
+        <div class="plates" id="plates"></div>
+        <div class="tags"><span class="tg solid">In production</span><span class="tg">Open source</span><span class="tg">Security</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec" id="s4"><div class="page">
+    <div class="sh row"><div class="num">3.0</div><h2>Pixel grid</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin"><p class="intro">One square grid for everyone. Each brand has its own default mode, scale, density and direction, marked ★. Click the field or press space for a new arrangement.</p></div>
+      <div class="c-main">
+        <div class="gen">
+          <div class="ctrl">
+            <div class="g"><div class="lr"><span>Mode</span></div><div class="seg" id="gMode">
+              <button data-v="scatter">Scatter</button><button data-v="clusters">Clusters</button><button data-v="fade">Fade</button><button data-v="ripple">Ripple</button></div></div>
+            <div class="g"><div class="lr"><span>Direction</span></div><div class="seg five" id="gDir">
+              <button data-v="none" aria-label="No direction">·</button><button data-v="up" aria-label="From the bottom">↑</button><button data-v="down" aria-label="From the top">↓</button><button data-v="right" aria-label="From the left">→</button><button data-v="left" aria-label="From the right">←</button></div></div>
+            <div class="g"><div class="lr"><label for="gSize">Pixel size</label><b><span id="gSizeOut">24</span> px</b></div><input type="range" id="gSize" min="4" max="120" value="24"></div>
+            <div class="g"><div class="lr"><label for="gDen">Density</label><b><span id="gDenOut">50</span>%</b></div><input type="range" id="gDen" min="2" max="98" value="50"></div>
+            <div class="g"><div class="lr"><span>Ground / pixel</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><select id="gBg" aria-label="Background"></select><select id="gFg" aria-label="Pixel"></select></div></div>
+            <div class="g"><div class="lr"><label for="gDims">Format</label></div><select id="gDims">
+              <option value="1920x1080">Slide / desktop · 1920 × 1080</option><option value="1200x630">OG image · 1200 × 630</option><option value="1080x1080">Square · 1080 × 1080</option><option value="1080x1920">Story · 1080 × 1920</option><option value="2560x1440">Large desktop · 2560 × 1440</option></select></div>
+            <div class="acts">
+              <button class="btn primary" id="gRoll">Generate another</button>
+              <button class="btn" id="gSave">Download PNG</button>
+              <button class="btn" id="gReset">Reset to brand preset</button>
+            </div>
+          </div>
+          <figure class="fig" style="min-width:0">
+            <div class="stage"><canvas id="gCv"></canvas></div>
+            <figcaption class="cap"><b>Figure 3.1</b><span id="gMeta" class="mono"></span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec" id="s5"><div class="page">
+    <div class="sh row"><div class="num">4.0</div><h2>Imagery</h2><div class="run"></div></div>
+    <div id="gallery"></div>
+  </div></section>
+
+  <section class="sec" id="s6"><div class="page">
+    <div class="sh row"><div class="num">5.0</div><h2>Applications</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin"><p class="intro">Deck cover, OG image and square post, generated from the tokens. Text never sits on pixels; the grid clears around every text block.</p></div>
+      <div class="c-main">
+        <div class="tpl-grid">
+          <figure class="fig"><div class="tpl r169" id="tplCover"></div><figcaption class="cap"><b>Figure 5.1</b><span>Deck cover · 1920 × 1080</span></figcaption></figure>
+          <figure class="fig"><div class="tpl rsq" id="tplSq"></div><figcaption class="cap"><b>Figure 5.2</b><span>Social post · 1080 × 1080</span></figcaption></figure>
+          <figure class="fig" style="grid-column:1/2"><div class="tpl rog" id="tplOg"></div><figcaption class="cap"><b>Figure 5.3</b><span>OG image · 1200 × 630</span></figcaption></figure>
+        </div>
+        <p class="label" style="margin:44px 0 12px">5.1 The family, side by side</p>
+        <div class="side" id="sideBySide"></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec" id="s7"><div class="page">
+    <div class="sh row"><div class="num">6.0</div><h2>Tokens</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin"><p class="intro">A new cluster is just a file of overrides. The resolved version is the base with the add-on applied on top, ready for decks, sites and generators.</p></div>
+      <div class="c-main">
+        <div class="seg two" id="tkView"><button data-v="override" aria-pressed="true">Add-on only</button><button data-v="resolved" aria-pressed="false">Resolved</button></div>
+        <pre id="tkOut" style="margin-top:12px"></pre>
+        <div class="actions"><button class="btn" id="tkCopy">Copy JSON</button><button class="btn" id="tkSave">Download JSON</button><button class="btn" id="delCluster" hidden>Delete this cluster</button><span class="small grey" id="delNote"></span></div>
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="page row"><div class="c-margin">Ethereum Foundation</div><div class="c-main">Graphics Standards Manual · base brand and cluster add-ons. Cluster hex values, imagery notes and sample copy are based on Protocol, Access Layer and Public Sector materials.</div></div></footer>
+
+<dialog id="addDlg"><form id="addForm" method="dialog">
+  <h3>New cluster</h3>
+  <p class="small grey" style="margin:0">Creates an add-on with the minimum: a name, three colours and a pixel mode. Everything else comes from the base.</p>
+  <label>Name<input type="text" id="aName" placeholder="e.g. Ecosystem" autocomplete="off"></label>
+  <div class="cols">
+    <label>Dark ground<input type="color" id="aDark" value="#1d1a2e"></label>
+    <label>Primary<input type="color" id="aPrimary" value="#3d3a8a"></label>
+    <label>Accent<input type="color" id="aAccent" value="#ff8a5c"></label>
+  </div>
+  <label>Pixel mode<select id="aMode"><option value="scatter">Scatter</option><option value="clusters">Clusters</option><option value="fade">Fade</option><option value="ripple">Ripple</option></select></label>
+  <div class="err" id="aErr"></div>
+  <div class="actions" style="margin:0"><button class="btn primary" id="aOk" value="ok">Create cluster</button><button class="btn" value="cancel" id="aCancel">Cancel</button></div>
+</form></dialog>
+<dialog id="lb" aria-label="Image viewer">
+  <figure class="fig"><img id="lbImg" alt=""><figcaption class="cap"><b id="lbNum"></b><span id="lbCap"></span></figcaption></figure>
+  <div class="actions"><button class="btn" id="lbPrev">← Previous</button><button class="btn" id="lbNext">Next →</button><button class="btn primary" id="lbClose">Close</button></div>
+</dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+/* ---------------- tokens ---------------- */
+const BASE = {
+  id:'base', name:'Ethereum Foundation', lockup:'', logo:'ef-logo.svg',
+  summary:'One foundation, three clusters. Every cluster shares the logo, type and grid, and adds its own colour, pixel behaviour, emphasis and imagery. Pick a cluster below to open its full guidelines.',
+  color:{
+    dark:'#1E1F2E', light:'#F2F1EE', ink:'#1E1F2E', onDark:'#F4F3F0',
+    primary:'#9E69AC', accent:'#0DAFD2', secondary:'#F58B77', muted:'#8A8C99'
+  },
+  type:{ display:'Funnel Sans', displayWeight:600, body:'Funnel Sans', mono:'IBM Plex Mono' },
+  grid:{ unit:'square', columns:12, margins:'6.5% of width', pageNumbers:true },
+  pixel:{ mode:'clusters', dir:'none', size:48, density:40, bg:'light', fg:'trio' },
+  grain:.07,
+  highlight:'rule',
+  image:{
+    world:'No world of its own. Uses only the pattern and textures. Documentary photography of people and events when needed.',
+    treatment:'Neutral photography with light grain. Colour comes from the three brand colours in the pixels, not from the image.',
+    mask:'Large, calm blocks in cyan, purple and coral, with few loose pixels.'
+  },
+  voice:{ tone:'Neutral, factual, no hype', sample:'The Ethereum Foundation is one participant in the broader Ethereum ecosystem.' },
+  covers:{ title:'Ethereum Foundation', sub:'Graphics Standards Manual' }
+};
+
+const PRESETS = {
+  protocol:{
+    id:'protocol', name:'Protocol', lockup:'protocol',
+    summary:'Blue and lime. Ordered pixels that advance in one direction, like blocks in a chain.',
+    color:{ dark:'#1B2160', primary:'#313A88', accent:'#D6F24A', ink:'#1B2160', light:'#ECEEF6' },
+    pixel:{ mode:'fade', dir:'right', size:40, density:48, bg:'primary', fg:'accent' },
+    grain:.06, highlight:'bar',
+    image:{ world:'Event cities and landmarks, such as the Gateway of India in Mumbai.', treatment:'Duotone illustration in blue and lime.', mask:'Ordered blocks entering from the side.' },
+    voice:{ tone:'Technical and precise, for people building the protocol', sample:'Ship Hegotá together. Align on I* and PQ Ethereum.' },
+    covers:{ title:'Mumbai L1 R&D Workshop', sub:'1–2 November 2026' },
+    heroImage:['gallery/protocol-01.jpg','Domed station beside a river canyon'],
+    gallery:[
+      ['gallery/protocol-01.jpg','Domed station beside a river canyon'],
+      ['gallery/protocol-02.jpg','Glass-domed observatory over a pastel valley'],
+      ['gallery/protocol-03.jpg','Floating islands and crystal towers above the clouds'],
+      ['gallery/protocol-04.jpg','Terraced cliff city with waterfalls and a rotunda'],
+      ['gallery/protocol-05.jpg','Coastal cliff town with a lighthouse'],
+      ['gallery/protocol-06.jpg','Desert mesa city and a domed market'],
+      ['gallery/protocol-07.jpg','Garden terrace city by the sea at sunset'],
+      ['gallery/protocol-08.jpg','Green city with glass towers and an elevated railway'],
+      ['gallery/protocol-09.jpg','Forest path with waterfalls and floating cliffs'],
+      ['gallery/protocol-10.jpg','Crystal monolith beside an open road'],
+      ['gallery/mumbai-01.jpg','Sunset skyline over the rocky seafront','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-02.jpg','Gateway of India at golden hour','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-03.jpg','The harbour at sunset, seen from above the Gateway','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-04.jpg','Gothic railway terminus under pastel skies','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-05.jpg','Tree-lined seafront promenade','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-06.jpg','City skyline over old mill chimneys','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-07.jpg','Cable-stayed sea bridge into the city','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-08.jpg','Red domes of a waterfront hotel','Mumbai L1 R&D Workshop'],
+      ['gallery/mumbai-09.jpg','Tropical cityscape panorama','Mumbai L1 R&D Workshop']
+    ]
+  },
+  'access-layer':{
+    id:'access-layer', name:'Access Layer', lockup:'access layer',
+    summary:'Purple and neon blue. Scattered pixels rising from the edge, like the interfaces between users and the protocol.',
+    color:{ dark:'#2A0F2B', primary:'#4A1B52', accent:'#7DF2E4', ink:'#2A0F2B' },
+    pixel:{ mode:'scatter', dir:'up', size:30, density:62, bg:'dark', fg:'accent' },
+    grain:.12, highlight:'marker',
+    image:{ world:'Botanicals and fantasy landscapes.', treatment:'Dot halftone in the neon colour, or full-colour illustration in pinks and lilacs.', mask:'A mask that breaks into loose pixels at the edge.' },
+    voice:{ tone:'Direct to builders, “we help you”', sample:'Ethereum reaches users through your products.' },
+    covers:{ title:'Applications Enablement', sub:'Who we are, how we work, and what you can expect of us.' },
+    heroImage:['gallery/access-02.jpg','Garden pond below floating islands and a pink moon'],
+    gallery:[
+      ['gallery/access-01.jpg','Wisteria terrace with a table set above the lake','Reference worlds','4/5'],
+      ['gallery/access-02.jpg','Garden pond below floating islands and a pink moon','Reference worlds','4/5'],
+      ['gallery/access-03.jpg','Gothic cathedral at the end of a blossom avenue','Reference worlds','4/5'],
+      ['gallery/access-04.jpg','Rose garden path leading to a pink palace','Reference worlds','4/5'],
+      ['gallery/access-05.jpg','Moonlit garden terrace with a statue, stairs and a floating city','Reference worlds','4/5'],
+      ['gallery/access-06.jpg','Blossom-covered stone stair under lantern-lit arches','Reference worlds','4/5']
+    ]
+  },
+  'public-sector':{
+    id:'public-sector', name:'Public Sector', lockup:'public sector',
+    summary:'Green and yellow. Pixels spreading in waves from a centre, like a public square.',
+    color:{ dark:'#0F2A1E', primary:'#1E5A3C', accent:'#F2D64B', ink:'#0F2A1E', light:'#EEEEE6' },
+    pixel:{ mode:'ripple', dir:'none', size:28, density:44, bg:'dark', fg:'accent' },
+    grain:.08, highlight:'rule',
+    image:{ world:'Civic architecture: gardens, squares, domes.', treatment:'Soft full-colour illustration, no crypto imagery.', mask:'Rounded cluster cut-outs, never aggressive.' },
+    voice:{ tone:'Institutional and clear, no jargon', sample:'Digital public infrastructure, sovereign by design.' },
+    covers:{ title:'Digital public infrastructure', sub:'Sovereign by design' },
+    gallery:[
+      ['gallery/public-01.jpg','Market square with a fountain above the lake','Reference worlds','16/9'],
+      ['gallery/public-02.jpg','Planning table under an olive tree, aqueduct beyond','Reference worlds','16/9'],
+      ['gallery/public-03.jpg','Pottery workshop on a lakeside terrace','Reference worlds','16/9'],
+      ['gallery/public-04.jpg','Meeting under a pergola above vineyard hills','Reference worlds','16/9'],
+      ['gallery/public-05.jpg','Library terrace looking out to a lake island','Reference worlds','16/9'],
+      ['gallery/public-06.jpg','Town square with a fountain and a hillside church','Reference worlds','16/9']
+    ]
+  }
+};
+
+const COLOR_META = {
+  dark:['Dark ground','Covers, sites, main ground'],
+  light:['Light ground','Content slides, paper'],
+  ink:['Ink','Text on light grounds'],
+  onDark:['Text on dark','Text on dark grounds'],
+  primary:['Primary','Blocks, alternate grounds'],
+  accent:['Accent','Pixels, titles, markers'],
+  secondary:['Secondary','Third colour, pixels and charts'],
+  muted:['Neutral','Captions, rules']
+};
+const TRIO_KEYS = ['accent','primary','secondary'];
+const fgOf = (B, key) => (key === 'trio' || key === 'logo') ? TRIO_KEYS.map(k => B.color[k]) : (B.color[key] || B.color.accent);
+const HL_NAMES = { rule:'Underline', marker:'Highlight', bar:'Leading bar' };
+const HL_DESC = { rule:'A thick accent line under the words.', marker:'A block of accent colour behind the words.', bar:'A short accent bar before the first word.' };
+const MODE_NAMES = { scatter:'Scatter', clusters:'Clusters', fade:'Fade', ripple:'Ripple' };
+const DIR_NAMES = { none:'no direction', up:'from the bottom', down:'from the top', right:'from the left', left:'from the right' };
+
+/* ---------------- storage (per viewer) ---------------- */
+const LS = 'ef-brand-system-v1';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { saved = {}; }
+const edits = saved.edits || {};
+const custom = saved.custom || {};
+function persist(){ try { localStorage.setItem(LS, JSON.stringify({edits, custom})); } catch (e) {} }
+
+/* ---------------- helpers ---------------- */
+const $ = id => document.getElementById(id);
+const clone = o => JSON.parse(JSON.stringify(o));
+function merge(a, b){
+  const out = clone(a || {});
+  for (const k in (b || {})) {
+    const v = b[k];
+    out[k] = (v && typeof v === 'object' && !Array.isArray(v)) ? merge(out[k], v) : v;
+  }
+  return out;
+}
+const rgb = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16));
+const hex = a => '#' + a.map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
+const mix = (a, b, t) => { const A = rgb(a), B = rgb(b); return hex(A.map((v,i) => v + (B[i]-v)*t)); };
+const lum = h => { const [r,g,b] = rgb(h); return (0.299*r + 0.587*g + 0.114*b) / 255; };
+const clamp = (v, lo=0, hi=1) => v < lo ? lo : v > hi ? hi : v;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* Ethereum Foundation is the front page: an overview of the clusters. Each cluster has its full guidelines. */
+const DEFAULT_ID = 'base';
+function brandIds(){ return ['base', ...Object.keys(PRESETS), ...Object.keys(custom)]; }
+const clusterIds = () => brandIds().filter(id => id !== 'base');
+function overrideOf(id){ return id === 'base' ? {} : (PRESETS[id] || custom[id] || {}); }
+function resolve(id){
+  const base = merge(BASE, edits.base);
+  if (id === 'base') return base;
+  return merge(base, merge(overrideOf(id), edits[id]));
+}
+function ownKeys(id){ return id === 'base' ? null : merge(overrideOf(id), edits[id]); }
+const displayName = id => id === 'base' ? 'Ethereum Foundation' : resolve(id).name;
+
+/* ---------------- pixel engine ---------------- */
+function mulberry32(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const smooth = t => t*t*(3-2*t);
+function drawPixels(cv, w, h, o){
+  const px = Math.max(2, o.size);
+  const cols = Math.ceil(w / px), rows = Math.ceil(h / px);
+  const rnd = mulberry32(o.seed);
+  const d = o.density / 100;
+  const g = (x, y) => {
+    switch (o.dir) {
+      case 'up': return y / (rows - 1 || 1);
+      case 'down': return 1 - y / (rows - 1 || 1);
+      case 'right': return 1 - x / (cols - 1 || 1);
+      case 'left': return x / (cols - 1 || 1);
+      default: return null;
+    }
+  };
+  let field = null;
+  if (o.mode === 'clusters') {
+    const s = 4 + Math.floor(rnd() * 4);
+    const gw = Math.ceil(cols / s) + 2, gh = Math.ceil(rows / s) + 2;
+    const grid = new Float32Array(gw * gh); for (let i = 0; i < grid.length; i++) grid[i] = rnd();
+    const at = (cx, cy) => grid[Math.min(cy, gh-1) * gw + Math.min(cx, gw-1)];
+    field = (x, y) => { const fx = x/s, fy = y/s, x0 = Math.floor(fx), y0 = Math.floor(fy), tx = smooth(fx-x0), ty = smooth(fy-y0);
+      return (at(x0,y0)*(1-tx) + at(x0+1,y0)*tx) * (1-ty) + (at(x0,y0+1)*(1-tx) + at(x0+1,y0+1)*tx) * ty; };
+  } else if (o.mode === 'ripple') {
+    const cx = (0.25 + rnd()*0.5) * cols, cy = (0.35 + rnd()*0.5) * rows, f = (0.28 + rnd()*0.22) * (40 / Math.max(cols, 20));
+    field = (x, y) => 0.5 + 0.5 * Math.cos(Math.hypot(x - cx, y - cy) * f * 6);
+  }
+  const off = document.createElement('canvas'); off.width = cols; off.height = rows;
+  const c = off.getContext('2d'); const img = c.createImageData(cols, rows); const D = img.data;
+  const FG = (Array.isArray(o.fg) ? o.fg : [o.fg]).map(rgb), B = rgb(o.bg);
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    let p; const gv = g(x, y);
+    if (o.mode === 'scatter') p = d;
+    else if (o.mode === 'fade') p = clamp(((gv ?? y/(rows-1||1)) + d - 1) * 2.6 + 0.12);
+    else if (o.mode === 'clusters') p = clamp((field(x, y) - (1 - d)) * 3.2 + 0.5);
+    else p = clamp((field(x, y) + d - 1) * 3 + 0.25);
+    if (o.mode !== 'fade' && gv !== null) p *= clamp((gv - 0.3) / 0.55);
+    if (o.clear && o.clear.length) {
+      const ccx = (x + .5) * px, ccy = (y + .5) * px, pad = px * 1.2;
+      for (const [rx, ry, rw, rh] of o.clear) {
+        const dx = Math.max(rx - ccx, 0, ccx - (rx + rw)), dy = Math.max(ry - ccy, 0, ccy - (ry + rh));
+        const dist = Math.max(dx, dy);
+        if (dist <= pad) { p = 0; break; }
+        if (dist <= pad * 2.5) p *= 0.2;
+      }
+    }
+    const on = rnd() < p; const col = on ? (FG.length > 1 ? FG[(rnd() * FG.length) | 0] : FG[0]) : B; const i = (y*cols + x) * 4;
+    D[i] = col[0]; D[i+1] = col[1]; D[i+2] = col[2]; D[i+3] = 255;
+  }
+  c.putImageData(img, 0, 0);
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(off, 0, 0, cols, rows, 0, 0, cols * px, rows * px);
+  return { cols, rows };
+}
+
+/* text-safe zones: measure text blocks and keep pixels out from under them */
+function textBox(el){
+  if (!el) return null;
+  const rg = document.createRange(); rg.selectNodeContents(el);
+  return { getBoundingClientRect: () => rg.getBoundingClientRect() };
+}
+function textRects(container, els, canvasW){
+  const box = container.getBoundingClientRect(); if (!box.width) return [];
+  const s = canvasW / box.width;
+  return els.filter(Boolean).map(el => {
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    return [(r.left - box.left) * s, (r.top - box.top) * s, r.width * s, r.height * s];
+  }).filter(Boolean);
+}
+
+/* official EF logo: loaded from the published SVG, wordmark recoloured to currentColor */
+let logoReady = false;
+function loadLogo(){
+  fetch('ef-logo.svg').then(r => r.ok ? r.text() : Promise.reject()).then(txt => {
+    const doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
+    const seen = new Set(); let inner = '';
+    doc.querySelectorAll('path').forEach(p => {
+      const d = p.getAttribute('d'); if (!d || seen.has(d)) return; seen.add(d);
+      let fill = p.getAttribute('fill') || 'currentColor';
+      if (/^(white|#fff|#ffffff)$/i.test(fill)) fill = 'currentColor';
+      if (!/^(currentColor|#[0-9a-f]{3,8})$/i.test(fill)) fill = 'currentColor';
+      inner += `<path d="${d.replace(/[^0-9a-zA-Z.,\- ]/g, '')}" fill="${fill}"/>`;
+    });
+    if (!inner) return;
+    document.querySelector('svg[aria-hidden="true"]').insertAdjacentHTML('beforeend', `<symbol id="eflogo" viewBox="0 0 270 86">${inner}</symbol>`);
+    logoReady = true;
+    const B = resolve(current); renderLockup(B); renderTemplates(B);
+  }).catch(() => {});
+}
+/* logotype rule: white on dark grounds, dark ink on light grounds */
+function lockupInner(B, glyph, onDark = true){
+  const type = onDark ? '#FFFFFF' : B.color.ink;
+  if (B.id === 'base' && logoReady) return `<svg class="eflogo" viewBox="0 0 270 86" role="img" aria-label="ethereum foundation" style="color:${type}"><use href="#eflogo"/></svg>`;
+  return `<svg${glyph ? ` style="color:${glyph}"` : ''}><use href="#eth"/></svg><span style="color:${type}">ethereum foundation${B.lockup ? `<b>${esc(B.lockup)}</b>` : ''}</span>`;
+}
+
+/* ---------------- state ---------------- */
+let current = 'base';
+let tkMode = 'override';
+const gen = { seed: (Math.random()*1e9)|0, w:1920, h:1080 };
+let genOpts = null;
+let mode = 'light';
+try { if (localStorage.getItem('ef-brand-system-mode') === 'dark') mode = 'dark'; } catch (e) {}
+
+function applyTheme(B){
+  const r = document.documentElement.style, c = B.color;
+  r.setProperty('--b-dark', c.dark); r.setProperty('--b-light', c.light); r.setProperty('--b-ink', c.ink);
+  r.setProperty('--b-ondark', c.onDark); r.setProperty('--b-primary', c.primary);
+  r.setProperty('--b-accent', lum(c.accent) < 0.25 && lum(c.dark) < 0.25 ? c.onDark : c.accent);
+  r.setProperty('--b-text', lum(c.dark) < 0.45 ? c.dark : '#141414');
+  /* page theme: neutral paper, or the brand's own light or dark grounds */
+  let paper, ink, strong;
+  if (mode === 'dark') { paper = c.dark; ink = c.onDark; strong = lum(c.accent) > 0.3 ? c.accent : c.onDark; }
+  else { paper = c.light; ink = c.ink; strong = lum(c.primary) < 0.55 ? c.primary : c.ink; }
+  r.setProperty('--paper', paper); r.setProperty('--ink', ink); r.setProperty('--strong', strong);
+  r.setProperty('--grey', mix(ink, paper, .42)); r.setProperty('--faint', mix(ink, paper, .8)); r.setProperty('--wash', mix(ink, paper, .93));
+  r.setProperty('color-scheme', mode === 'dark' ? 'dark' : 'light');
+  $('modeSw').setAttribute('aria-checked', mode === 'dark');
+  $('lblLight').classList.toggle('on', mode !== 'dark'); $('lblDark').classList.toggle('on', mode === 'dark');
+  let meta = document.querySelector('meta[name=theme-color]');
+  if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+  meta.content = paper;
+}
+
+/* ---------------- render ---------------- */
+function renderSwitch(){
+  $('switch').innerHTML = brandIds().map(id => {
+    const B = resolve(id);
+    return `<button data-id="${id}" aria-pressed="${id === current}" style="--c1:${B.color.dark};--c2:${B.color.accent}"><i></i>${esc(displayName(id))}</button>`;
+  }).join('') + `<button class="add" id="addBtn">+ Cluster</button>`;
+}
+function renderLockup(B){
+  if (mode === 'dark') { $('lockup').innerHTML = lockupInner(B, B.color.accent, true); return; }
+  const glyph = lum(B.color.dark) < 0.5 ? B.color.dark : '#141414';
+  $('lockup').innerHTML = lockupInner(B, glyph, false);
+}
+
+function renderHero(B){
+  renderLockup(B);
+  $('heroEyebrow').textContent = current === 'base' ? 'Base brand' : 'Cluster · add-on to the base';
+  $('heroTitle').textContent = displayName(current);
+  $('heroText').textContent = B.summary || '';
+  const own = ownKeys(current);
+  const n = own ? Object.keys(own).filter(k => !['id','name','lockup','summary','covers'].includes(k)).length : 0;
+  $('heroInherit').textContent = own ? '' : 'Source of every cluster';
+  $('heroInherit').hidden = !!own;
+  document.querySelectorAll('section[id^="s"] .sh .run').forEach(el => el.textContent = displayName(current));
+  /* the Ethereum Foundation front page is text only; clusters keep their pixel figure */
+  const isBase = current === 'base';
+  $('heroFig').hidden = isBase;
+  $('heroEyebrow').style.marginTop = isBase ? '0' : '36px';
+  if (isBase) return;
+  const fr = $('heroFrame').getBoundingClientRect();
+  const w = Math.max(320, Math.round(fr.width)), h = Math.max(140, Math.round(fr.height));
+  const P = B.pixel;
+  const bg = P.bg === 'light' ? B.color.light : (P.bg === 'primary' ? B.color.primary : B.color.dark);
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cell = Math.max(4, Math.round(P.size * 0.6 * dpr));
+  const cv = $('heroCv');
+  /* banner: the cluster's dark colour only; the image dissolves into it in pixel blocks */
+  drawPixels(cv, Math.round(w * dpr), Math.round(h * dpr), { ...P, size: cell, bg: B.color.dark, fg: B.color.dark, seed: 7 });
+  $('heroCap').textContent = `Pixel field, ${MODE_NAMES[P.mode]}, ${DIR_NAMES[P.dir]}, density ${P.density}%.`;
+  /* header image: one of the cluster's references, pixel-masked into the pattern from the left */
+  const hero = B.heroImage || (B.gallery && B.gallery[0]);
+  if (!hero) return;
+  const token = ++heroToken;
+  loadImg(hero[0]).then(img => {
+    if (token !== heroToken) return;
+    paintHeroImage(cv, img, cell, 23);
+    $('heroCap').textContent = `Dark ground with a pixel-masked image: ${hero[1]}.`;
+  }).catch(() => {});
+}
+let heroToken = 0;
+const imgCache = {};
+function loadImg(src){
+  return imgCache[src] || (imgCache[src] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }));
+}
+function paintHeroImage(cv, img, cell, seed){
+  const W = cv.width, H = cv.height, x0 = Math.round(W * 0.36), rw = W - x0;
+  const layer = document.createElement('canvas'); layer.width = W; layer.height = H;
+  const lc = layer.getContext('2d');
+  const s = Math.max(rw / img.width, H / img.height), dw = img.width * s, dh = img.height * s;
+  lc.drawImage(img, x0 + (rw - dw) / 2, (H - dh) / 2, dw, dh);
+  const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell);
+  const m = document.createElement('canvas'); m.width = cols; m.height = rows;
+  const mc = m.getContext('2d'), id = mc.createImageData(cols, rows);
+  const rnd = mulberry32(seed), c0 = x0 / cell, fade = (rw * 0.5) / cell;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const t = (x - c0) / fade;
+    const p = t <= 0 ? 0 : t >= 1 ? 1 : smooth(t);
+    id.data[(y * cols + x) * 4 + 3] = rnd() < p ? 255 : 0;
+  }
+  mc.putImageData(id, 0, 0);
+  lc.globalCompositeOperation = 'destination-in';
+  lc.imageSmoothingEnabled = false;
+  lc.drawImage(m, 0, 0, cols, rows, 0, 0, cols * cell, rows * cell);
+  cv.getContext('2d').drawImage(layer, 0, 0);
+}
+
+function renderInheritance(B){
+  const own = ownKeys(current) || {};
+  const isBase = current === 'base';
+  const st = (fixed, key) => fixed ? '<span class="pill fixed">Fixed</span>' : isBase ? '<span class="pill inh">Base</span>' : (own[key] !== undefined ? '<span class="pill own">Add-on</span>' : '<span class="pill inh">Inherited</span>');
+  const rows = [
+    ['Logo and lockup', true, null, isBase ? 'Full-colour glyph + wordmark. Wordmark in white on dark grounds, in ink on light grounds' : `EF diamond + “ethereum foundation / ${esc(B.lockup)}” in mono. Type in white on dark, ink on light`],
+    ['Typography', true, null, `${B.type.display} (headings and text) / ${B.type.mono} (lockup, tags)`],
+    ['Layout grid', true, null, '12 columns, margins, page numbers, lockup position'],
+    ['Palette', false, 'color', `<span class="mono">${esc(B.color.dark)} · ${esc(B.color.primary)} · ${esc(B.color.accent)}</span>`],
+    ['Pixel pattern', false, 'pixel', `${MODE_NAMES[B.pixel.mode]}, ${DIR_NAMES[B.pixel.dir]}, ${B.pixel.size}px, ${B.pixel.density}%`],
+    ['Grain', false, 'grain', `${Math.round(B.grain*100)}% opacity`],
+    ['Emphasis', false, 'highlight', HL_NAMES[B.highlight] || HL_NAMES.rule],
+    ['Imagery', false, 'gallery', B.gallery && B.gallery.length ? `${B.gallery.length} reference images` : 'No reference images yet']
+  ];
+  $('inhBody').innerHTML = rows.map(([n, f, k, v]) => `<tr><td>${n}</td><td>${st(f, k)}</td><td>${v}</td></tr>`).join('');
+}
+
+function renderColors(B){
+  const own = (ownKeys(current) || {}).color || {};
+  $('swatches').innerHTML = Object.keys(COLOR_META).map(k => {
+    const [n, r] = COLOR_META[k]; const v = B.color[k]; if (!v) return '';
+    const tag = current === 'base' ? 'base' : (own[k] ? 'add-on' : 'inherited');
+    return `<div class="sw"><label style="--c:${v}" aria-label="Change ${n}"><input type="color" data-k="${k}" value="${v}"></label>
+      <div class="k">${n}<span>${tag}</span></div><div class="r">${r}</div>
+      <dl class="spec"><dt>HEX</dt><dd><button data-copy="${v}" aria-label="Copy ${v}">${v.toUpperCase()}</button></dd><dt>RGB</dt><dd>${rgb(v).join(' ')}</dd></dl></div>`;
+  }).join('');
+  const c = B.color;
+  const pal = current === 'base' ? [c.accent, c.primary, c.secondary, mix(c.accent, c.light, .5), mix(c.primary, c.light, .5), mix(c.secondary, c.light, .5)]
+    : [c.primary, c.accent, mix(c.primary, c.light, .45), mix(c.accent, c.dark, .4), c.muted, mix(c.accent, c.light, .55)];
+  $('chart').innerHTML = pal.map(p => `<span style="background:${p}" title="${p}"></span>`).join('');
+}
+
+function renderHighlights(B){
+  const def = HL_NAMES[B.highlight] ? B.highlight : 'rule';
+  $('plates').innerHTML = ['rule','marker','bar'].map((v, i) => `<figure class="fig">
+    <div class="plate hl-${v}"><span class="small" style="opacity:.7">${displayName(current)}</span><h3><span class="hx">Know what you sign</span></h3></div>
+    <figcaption class="plate-cap"><span><b>2.1.${i+1}</b> ${HL_NAMES[v]}</span>${v === def ? '<span class="def">Default</span>' : ''}</figcaption>
+    <p class="small grey" style="margin:2px 0 0">${HL_DESC[v]}</p></figure>`).join('');
+}
+
+function syncGenUI(){
+  const B = resolve(current), P = B.pixel;
+  const mark = (sel, v, pv) => document.querySelectorAll(sel + ' button').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.v === v);
+    b.querySelector('.star')?.remove();
+    if (b.dataset.v === pv && sel === '#gMode') b.insertAdjacentHTML('beforeend', '<span class="star" aria-label="preset">★</span>');
+  });
+  mark('#gMode', genOpts.mode, P.mode); mark('#gDir', genOpts.dir, P.dir);
+  $('gSize').value = genOpts.size; $('gSizeOut').textContent = genOpts.size;
+  $('gDen').value = genOpts.density; $('gDenOut').textContent = genOpts.density;
+  const opts = Object.keys(COLOR_META).filter(k => B.color[k]).map(k => `<option value="${k}">${COLOR_META[k][0]}</option>`).join('');
+  $('gBg').innerHTML = opts; $('gFg').innerHTML = `<option value="trio">Brand trio (3 colours)</option>` + opts;
+  $('gBg').value = genOpts.bg; $('gFg').value = genOpts.fg;
+}
+function renderGen(){
+  const B = resolve(current);
+  const o = { ...genOpts, bg: B.color[genOpts.bg], fg: fgOf(B, genOpts.fg), seed: gen.seed };
+  const { cols, rows } = drawPixels($('gCv'), gen.w, gen.h, o);
+  $('gMeta').textContent = `${gen.w} × ${gen.h} px · ${cols} × ${rows} cells · seed ${gen.seed}`;
+}
+function resetGen(){ genOpts = clone(resolve(current).pixel); syncGenUI(); renderGen(); }
+
+let galleryList = [], lbIndex = 0;
+function renderImagery(B){
+  galleryList = B.gallery || [];
+  if (!galleryList.length) { $('gallery').innerHTML = `<div class="row"><div class="c-margin"></div><div class="c-main"><p class="empty">No reference images for ${esc(displayName(current))} yet.</p></div></div>`; return; }
+  ssGroups = [];
+  galleryList.forEach((g, i) => {
+    const name = g[2] || 'Reference worlds';
+    let grp = ssGroups.find(x => x.name === name);
+    if (!grp) { grp = { name, items: [], at: 0 }; ssGroups.push(grp); }
+    grp.items.push(i);
+  });
+  figNums = [];
+  $('gallery').innerHTML = ssGroups.map((grp, gi) => {
+    grp.items.forEach((i, n) => figNums[i] = `4.${gi+1}.${n+1}`);
+    const ar = galleryList[grp.items[0]][3] || (grp.name === 'Reference worlds' ? '7/3' : '16/9');
+    const [aw, ah] = ar.split('/').map(Number);
+    const [src0, cap0] = galleryList[grp.items[0]];
+    return `<div class="row ss-row">
+      <div class="c-margin"><div class="ss-meta"><span class="label">4.${gi+1} ${esc(grp.name)}</span><span class="small grey">${grp.items.length} images. Click a thumbnail to show it large; click the large image to view it full size.</span></div></div>
+      <div class="c-main"><div class="ss${ah > aw ? ' tall' : ''}" data-g="${gi}" style="--ar:${ar}">
+        <figure class="fig"><div class="ss-stage">
+          <button class="ss-big" aria-label="View full size"><img src="${esc(src0)}" alt="${esc(cap0)}" loading="${gi === 0 ? 'eager' : 'lazy'}"></button>
+          <button class="ss-nav prev" aria-label="Previous image">←</button><button class="ss-nav next" aria-label="Next image">→</button>
+        </div><figcaption class="cap"><b class="num">${figNums[grp.items[0]]}</b><span class="txt">${esc(cap0)}</span><span class="cnt">1 / ${grp.items.length}</span></figcaption></figure>
+        <div class="thumbs" role="list">${grp.items.map((i, n) => `<button role="listitem" data-t="${n}" aria-label="Show ${esc(galleryList[i][1])}" aria-current="${n === 0}"><img src="${esc(galleryList[i][0])}" alt="" loading="lazy"></button>`).join('')}</div>
+      </div></div></div>`;
+  }).join('');
+}
+let figNums = [], ssGroups = [];
+function setSlide(gi, n){
+  const grp = ssGroups[gi]; if (!grp) return;
+  grp.at = (n + grp.items.length) % grp.items.length;
+  const i = grp.items[grp.at], [src, cap] = galleryList[i];
+  const ss = document.querySelector(`.ss[data-g="${gi}"]`);
+  const img = ss.querySelector('.ss-big img'); img.src = src; img.alt = cap;
+  ss.querySelector('.num').textContent = figNums[i];
+  ss.querySelector('.txt').textContent = cap;
+  ss.querySelector('.cnt').textContent = `${grp.at + 1} / ${grp.items.length}`;
+  ss.querySelectorAll('.thumbs button').forEach(b => b.setAttribute('aria-current', +b.dataset.t === grp.at));
+  const t = ss.querySelector(`.thumbs button[data-t="${grp.at}"]`), strip = t.parentElement;
+  const l = t.offsetLeft - strip.offsetLeft;
+  if (l < strip.scrollLeft || l + t.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: l - 8, behavior: 'smooth' });
+}
+function showLb(i){
+  lbIndex = (i + galleryList.length) % galleryList.length;
+  const [src, cap, grp] = galleryList[lbIndex];
+  $('lbImg').src = src; $('lbImg').alt = cap;
+  $('lbNum').textContent = `Figure ${figNums[lbIndex]}`; $('lbCap').textContent = (grp ? grp + ' · ' : '') + cap;
+}
+
+function tplParts(B, kind, bgOverride){
+  const P = B.pixel;
+  const bg = bgOverride || (P.bg === 'light' ? B.color.light : (P.bg === 'primary' ? B.color.primary : B.color.dark));
+  const darkBg = lum(bg) < 0.5;
+  const title = darkBg ? (lum(B.color.accent) > 0.25 ? B.color.accent : B.color.onDark) : B.color.ink;
+  const text = darkBg ? B.color.onDark : B.color.ink;
+  const t = B.covers || BASE.covers;
+  return { bg, fg: fgOf(B, P.fg),
+    html: `<canvas></canvas><div class="in" style="color:${text}">
+      <div class="lk" style="color:${text}">${lockupInner(B, title, darkBg)}</div>
+      <div class="t" style="color:${title}">${esc(t.title)}</div>${kind !== 'og' ? `<div class="s">${esc(t.sub)}</div>` : ''}</div>` };
+}
+function fillTpl(el, B, kind, w, h, seed, look){
+  const T = tplParts(B, kind, look && look.bg);
+  if (look && look.fg) T.fg = look.fg;
+  el.innerHTML = T.html; el.style.background = T.bg;
+  if (look && look.text) el.querySelectorAll('.in, .in .lk, .in .t, .in .s, .in .lk svg, .in .lk span').forEach(n => n.style.color = look.text);
+  const P = B.pixel;
+  const dir = P.mode === 'ripple' ? 'up' : (P.dir === 'none' ? 'up' : P.dir);
+  const clear = textRects(el, [...el.querySelectorAll('.in > *')].map(c => (c.classList.contains('t') || c.classList.contains('s')) ? textBox(c) : c), w);
+  drawPixels(el.querySelector('canvas'), w, h, { mode: P.mode, dir,
+    size: Math.max(6, Math.round(P.size * w / 1920 * 1.15)), density: P.density, bg: T.bg, fg: T.fg, seed, clear });
+}
+function renderTemplates(B){
+  /* application examples: white text on dark grounds */
+  const white = lum(tplParts(B, 'cover').bg) < 0.5 ? { text: '#FFFFFF' } : undefined;
+  fillTpl($('tplCover'), B, 'cover', 960, 540, 11, white);
+  fillTpl($('tplOg'), B, 'og', 600, 315, 12, white);
+  fillTpl($('tplSq'), B, 'sq', 540, 540, 13, white);
+  const sb = $('sideBySide');
+  sb.innerHTML = clusterIds().map((id, i) => `<figure class="fig"><div class="tpl r169" data-id="${id}" tabindex="0" role="button" aria-label="Open ${esc(displayName(id))}"></div><figcaption class="cap"><b>5.1.${i+1}</b><span>${esc(displayName(id))}</span></figcaption></figure>`).join('');
+  /* comparison tiles: the cluster's own cover, with white text */
+  sb.querySelectorAll('.tpl').forEach(el => fillTpl(el, resolve(el.dataset.id), 'cover', 480, 270, 11, { text: '#FFFFFF' }));
+}
+
+function renderTokens(){
+  const B = resolve(current);
+  const data = (tkMode === 'resolved' || current === 'base') ? B : { extends: 'base', ...ownKeys(current) };
+  $('tkOut').textContent = JSON.stringify(data, null, 2);
+  document.querySelectorAll('#tkView button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === tkMode));
+  $('delCluster').hidden = !custom[current]; $('delNote').textContent = '';
+}
+
+const SECTIONS = [['s2','Colour'],['s3','Typography'],['s4','Pixel grid'],['s5','Imagery'],['s6','Applications'],['s7','Tokens']];
+function renderToc(){
+  const items = current === 'base'
+    ? clusterIds().map((id, i) => [`ov-${id}`, displayName(id), `${i+1}.0`])
+    : SECTIONS.map(([id, n], i) => [id, n, `${i+1}.0`]);
+  $('toc').innerHTML = items.map(([id, n, num]) => `<li><button data-go="${id}"><span>${num}</span>${esc(n)}</button></li>`).join('');
+}
+function renderOverview(){
+  const isBase = current === 'base';
+  $('overview').hidden = !isBase;
+  SECTIONS.forEach(([id]) => $(id).hidden = isBase);
+  if (!isBase) { $('overview').innerHTML = ''; return; }
+  const ids = clusterIds();
+  $('overview').innerHTML = ids.map((id, i) => {
+    const C = resolve(id), n = i + 1, imgs = (C.gallery || []).slice(0, 4);
+    const pal = [['dark','Dark ground'],['primary','Primary'],['accent','Accent'],['light','Light ground']];
+    return `<section class="sec" id="ov-${id}"><div class="page">
+      <div class="sh row"><div class="num">${n}.0</div><h2>${esc(C.name)}</h2><div class="run">Cluster ${n} of ${ids.length}</div></div>
+      <div class="row">
+        <div class="c-margin">
+          <p class="intro">${esc(C.summary || '')}</p>
+          <dl class="facts">
+            <dt>Pixels</dt><dd>${MODE_NAMES[C.pixel.mode]}, ${DIR_NAMES[C.pixel.dir]}</dd>
+            <dt>Emphasis</dt><dd>${HL_NAMES[C.highlight] || HL_NAMES.rule}</dd>
+            <dt>Imagery</dt><dd>${C.gallery && C.gallery.length ? C.gallery.length + ' reference images' : 'None yet'}</dd>
+          </dl>
+          <button class="btn primary" data-open="${id}">Open ${esc(C.name)} guidelines →</button>
+        </div>
+        <div class="c-main">
+          <figure class="fig"><div class="tpl r169" data-ov="${id}" tabindex="0" role="button" aria-label="Open ${esc(C.name)}"></div><figcaption class="cap"><b>Figure ${n}.1</b><span>Deck cover</span></figcaption></figure>
+          <div class="ov-pal">${pal.map(([k, label]) => `<div><span style="--c:${C.color[k]}"></span><p>${label}<br><code>${C.color[k].toUpperCase()}</code></p></div>`).join('')}</div>
+          ${imgs.length ? `<div class="ov-imgs">${imgs.map(g => `<img src="${esc(g[0])}" alt="${esc(g[1])}" loading="lazy">`).join('')}</div>` : ''}
+        </div>
+      </div></div></section>`;
+  }).join('');
+  $('overview').querySelectorAll('[data-ov]').forEach(el => {
+    /* overview banners: dark ground, primary pixels, white text */
+    const C = resolve(el.dataset.ov);
+    fillTpl(el, C, 'cover', 960, 540, 11, { bg: C.color.dark, fg: C.color.primary, text: '#FFFFFF' });
+    el.style.cursor = 'pointer';
+  });
+}
+
+function renderAll(resetGenerator = true){
+  if (!brandIds().includes(current)) current = DEFAULT_ID;
+  const B = resolve(current);
+  applyTheme(B); renderSwitch(); renderToc(); renderHero(B); renderOverview(); renderColors(B);
+  renderHighlights(B); renderImagery(B); renderTemplates(B); renderTokens();
+  if (resetGenerator || !genOpts) resetGen(); else { syncGenUI(); renderGen(); }
+}
+
+/* ---------------- events ---------------- */
+function go(id){ current = id; if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id); renderAll(true); }
+addEventListener('hashchange', () => { const h = location.hash.slice(1); if (h && h !== current && brandIds().includes(h)) { current = h; renderAll(true); } });
+
+$('switch').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'addBtn') { $('aErr').textContent = ''; $('aName').value = ''; $('addDlg').showModal(); return; }
+  go(b.dataset.id);
+});
+$('gallery').addEventListener('click', e => {
+  const ss = e.target.closest('.ss'); if (!ss) return;
+  const gi = +ss.dataset.g, grp = ssGroups[gi];
+  const t = e.target.closest('[data-t]');
+  if (t) return setSlide(gi, +t.dataset.t);
+  if (e.target.closest('.ss-nav.prev')) return setSlide(gi, grp.at - 1);
+  if (e.target.closest('.ss-nav.next')) return setSlide(gi, grp.at + 1);
+  if (e.target.closest('.ss-big')) { showLb(grp.items[grp.at]); $('lb').showModal(); }
+});
+$('gallery').addEventListener('keydown', e => {
+  const ss = e.target.closest('.ss'); if (!ss || !/Arrow(Left|Right)/.test(e.key)) return;
+  const gi = +ss.dataset.g; e.preventDefault();
+  setSlide(gi, ssGroups[gi].at + (e.key === 'ArrowRight' ? 1 : -1));
+  ss.querySelector(`.thumbs button[data-t="${ssGroups[gi].at}"]`).focus({ preventScroll: true });
+});
+$('lbPrev').onclick = () => showLb(lbIndex - 1);
+$('lbNext').onclick = () => showLb(lbIndex + 1);
+$('lbClose').onclick = () => $('lb').close();
+$('lb').addEventListener('click', e => { if (e.target === $('lb')) $('lb').close(); });
+$('lb').addEventListener('keydown', e => { if (e.key === 'ArrowLeft') showLb(lbIndex - 1); if (e.key === 'ArrowRight') showLb(lbIndex + 1); });
+$('modeSw').addEventListener('click', () => {
+  mode = mode === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('ef-brand-system-mode', mode); } catch (err) {}
+  const B = resolve(current); applyTheme(B); renderLockup(B);
+});
+$('lockup').addEventListener('click', e => { e.preventDefault(); go('base'); scrollTo({top:0, behavior:'smooth'}); });
+$('toc').addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (!b) return;
+  const t = $(b.dataset.go); const y = t.getBoundingClientRect().top + scrollY - document.querySelector('.bar').offsetHeight - 8;
+  scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
+$('overview').addEventListener('click', e => {
+  const b = e.target.closest('[data-open],[data-ov]'); if (!b) return;
+  go(b.dataset.open || b.dataset.ov); scrollTo({ top: 0, behavior: 'smooth' });
+});
+$('overview').addEventListener('keydown', e => {
+  const t = e.target.closest('[data-ov]'); if (!t || (e.key !== 'Enter' && e.key !== ' ')) return;
+  e.preventDefault(); go(t.dataset.ov); scrollTo({ top: 0 });
+});
+$('sideBySide').addEventListener('click', e => { const t = e.target.closest('.tpl'); if (t) { go(t.dataset.id); scrollTo({top:0, behavior:'smooth'}); } });
+$('sideBySide').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('tpl')) { e.preventDefault(); go(e.target.dataset.id); } });
+
+$('swatches').addEventListener('input', e => {
+  const k = e.target.dataset.k; if (!k) return;
+  edits[current] = edits[current] || {}; edits[current].color = edits[current].color || {};
+  edits[current].color[k] = e.target.value; persist();
+  applyTheme(resolve(current));
+  e.target.parentElement.style.setProperty('--c', e.target.value);
+});
+$('swatches').addEventListener('change', () => renderAll(false));
+$('swatches').addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) copy(b.dataset.copy); });
+$('resetColors').onclick = () => { if (edits[current]) delete edits[current].color; persist(); renderAll(false); toast('Colours reset'); };
+
+$('gMode').onclick = e => { const b = e.target.closest('button'); if (!b) return; genOpts.mode = b.dataset.v; syncGenUI(); renderGen(); };
+$('gDir').onclick = e => { const b = e.target.closest('button'); if (!b) return; genOpts.dir = b.dataset.v; syncGenUI(); renderGen(); };
+$('gSize').oninput = e => { genOpts.size = +e.target.value; $('gSizeOut').textContent = genOpts.size; renderGen(); };
+$('gDen').oninput = e => { genOpts.density = +e.target.value; $('gDenOut').textContent = genOpts.density; renderGen(); };
+$('gBg').onchange = e => { genOpts.bg = e.target.value; renderGen(); };
+$('gFg').onchange = e => { genOpts.fg = e.target.value; renderGen(); };
+$('gDims').onchange = e => { const [w, h] = e.target.value.split('x').map(Number); gen.w = w; gen.h = h; renderGen(); };
+const reroll = () => { gen.seed = (Math.random()*1e9)|0; renderGen(); };
+$('gRoll').onclick = reroll; $('gCv').onclick = reroll;
+$('gReset').onclick = () => { resetGen(); toast('Preset restored'); };
+addEventListener('keydown', e => { if (e.code === 'Space' && !/INPUT|SELECT|BUTTON|TEXTAREA/.test(e.target.tagName) && !$('addDlg').open && !$('lb').open) { const r = $('gCv').getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) { e.preventDefault(); reroll(); } } });
+
+/* downloads via capability */
+let dl = null;
+/* inside claude.ai downloads go through the capability; hosted anywhere else (e.g. GitHub Pages) a plain link works */
+const standalone = !(window.claude && window.claude.use);
+function updateDl(){ const ok = !!dl || standalone; $('gSave').hidden = !ok; $('tkSave').hidden = !ok; }
+updateDl();
+(async () => { try { dl = window.claude?.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; } updateDl(); })();
+async function save(filename, blob){
+  if (!dl) {
+    if (!standalone) return;
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return;
+  }
+  try { await dl.save({ filename, data: blob }); toast('Download started'); }
+  catch (e) { if (e && e.code !== 'declined' && e.code !== 'not_granted') toast('Could not download the file'); }
+}
+const slug = () => current === 'base' ? 'ef-base' : 'ef-' + current;
+$('gSave').onclick = () => $('gCv').toBlob(b => save(`${slug()}-pixels-${genOpts.mode}-${gen.w}x${gen.h}-${gen.seed}.png`, b), 'image/png');
+$('tkSave').onclick = () => save(`${slug()}-${tkMode === 'resolved' || current === 'base' ? 'resolved' : 'addon'}.json`, new Blob([$('tkOut').textContent], {type:'application/json'}));
+
+$('tkView').onclick = e => { const b = e.target.closest('button'); if (!b) return; tkMode = b.dataset.v; renderTokens(); };
+$('tkCopy').onclick = () => copy($('tkOut').textContent);
+
+let delArmed = false;
+$('delCluster').onclick = () => {
+  if (!delArmed) { delArmed = true; $('delNote').textContent = 'Click again to delete.'; setTimeout(() => { delArmed = false; $('delNote').textContent = ''; }, 4000); return; }
+  delArmed = false; delete custom[current]; delete edits[current]; persist(); go(DEFAULT_ID); toast('Cluster deleted');
+};
+
+$('addForm').addEventListener('submit', e => {
+  if (e.submitter && e.submitter.value === 'cancel') return;
+  const name = $('aName').value.trim();
+  const id = 'c-' + name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  if (!name || id === 'c-') { e.preventDefault(); $('aErr').textContent = 'Enter a name for the cluster.'; return; }
+  if (brandIds().includes(id)) { e.preventDefault(); $('aErr').textContent = 'A cluster with this name already exists.'; return; }
+  const dark = $('aDark').value, primary = $('aPrimary').value, accent = $('aAccent').value;
+  custom[id] = { id, name, lockup: name.toLowerCase(), summary: 'Add-on created here. Define imagery, emphasis and voice in the tokens file.',
+    color: { dark, primary, accent, ink: dark }, pixel: { mode: $('aMode').value, dir: 'up', size: 32, density: 50, bg: 'dark', fg: 'accent' },
+    covers: { title: name, sub: 'Ethereum Foundation cluster' } };
+  persist(); setTimeout(() => go(id), 0);
+});
+
+function copy(text){
+  try { navigator.clipboard.writeText(text).then(() => toast('Copied'), () => fallback(text)); } catch (e) { fallback(text); }
+}
+function fallback(text){ const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); toast('Copied'); } catch (e) { toast('Select the text and copy it manually'); } t.remove(); }
+let tt; function toast(m){ const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 1600); }
+
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { const B = resolve(current); renderHero(B); renderTemplates(B); }, 150); });
+
+/* boot */
+const h0 = location.hash.slice(1);
+current = brandIds().includes(h0) ? h0 : DEFAULT_ID;
+renderAll(true);
+loadLogo();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const B = resolve(current); renderHero(B); renderTemplates(B); renderOverview(); });
+})();
+</script>
+
+</body>
+</html>
