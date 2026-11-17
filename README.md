@@ -5,7 +5,8 @@ Graphics standards for the Ethereum Foundation and its clusters: Protocol, Acces
 ## Files
 - `index.html` – the style guide
 - `generator.html` – Pixel Grid Background Generator
-- `ef-logo.svg`, `logos/` – Ethereum Foundation and cluster logos
+- `ef-logo.svg`, `logos/` – Ethereum Foundation and cluster logos used on the site
+- `logo-packs/` – downloadable logo packs per cluster (SVG + PNG, primary and secondary, dark and light)
 - `gallery/` – reference images
 - `deck/` – Access Layer presentation deck pages
 - `web/` – website screenshots (Protocol, Public Sector)

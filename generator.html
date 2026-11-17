@@ -104,6 +104,12 @@
     </div>
 
     <div class="group">
+      <div class="label-row"><label for="tex">Grid texture</label><span class="readout"><span id="texOut">50</span>%</span></div>
+      <input type="range" id="tex" min="0" max="100" value="50">
+      <p style="color:var(--muted);font-size:11px">A fine tile texture over the whole canvas, like the Protocol website. 0% turns it off.</p>
+    </div>
+
+    <div class="group">
       <label for="dims">Format</label>
       <select id="dims">
         <option value="1920x1080">Slide / desktop · 1920 × 1080</option>
@@ -129,12 +135,12 @@
 (() => {
   /* cluster palettes: kept in sync with the guidelines (index.html) */
   const CLUSTERS = {
-    protocol:        { name:'Protocol',            dark:'#1B2160', light:'#ECEEF6', primary:'#313A88', accent:'#D6F24A' },
-    'access-layer':  { name:'Access Layer',        dark:'#2A0F2B', light:'#F2F1EE', primary:'#4A1B52', accent:'#7DF2E4' },
-    'public-sector': { name:'Public Sector',       dark:'#0F2A1E', light:'#EEEEE6', primary:'#1E5A3C', accent:'#F2D64B' }
+    protocol:        { name:'Protocol',            dark:'#1B2160', light:'#ECEEF6', primary:'#313A88', accent:'#D6F24A', neutral:'#E0E0E1' },
+    'access-layer':  { name:'Access Layer',        dark:'#2A0F2B', light:'#F2F1EE', primary:'#4A1B52', accent:'#7DF2E4', neutral:'#E0E0E1' },
+    'public-sector': { name:'Public Sector',       dark:'#0F2A1E', light:'#EEEEE6', primary:'#1E5A3C', accent:'#F2D64B', neutral:'#E0E0E1' }
   };
-  const PRESET = { mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent' };
-  const KEYS = ['dark','light','primary','accent'];
+  const PRESET = { mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent', tex:50 };
+  const KEYS = ['dark','light','primary','accent','neutral'];
   const $ = id => document.getElementById(id);
   const st = { cluster:'protocol', ...PRESET, w:1920, h:1080, seed:(Math.random()*1e9)|0 };
 
@@ -180,6 +186,21 @@
     return {cols,rows};
   }
 
+
+  /* fine grid texture: small tiles with a slight random tint and a darker 1px seam, scaled to the canvas */
+  function texture(cv, strength, seed){
+    if (!strength) return;
+    const k = strength / 100, ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+    const cell = Math.max(4, Math.round(8 * W / 1920)), rnd = mulberry32(seed ^ 0x5bd1e995);
+    for (let y = 0; y < H; y += cell) for (let x = 0; x < W; x += cell) {
+      const v = (rnd() - 0.5) * 0.12 * k;
+      ctx.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`;
+      ctx.fillRect(x, y, cell, cell);
+    }
+    ctx.fillStyle = `rgba(0,0,0,${0.10 * k})`;
+    for (let x = cell - 1; x < W; x += cell) ctx.fillRect(x, 0, 1, H);
+    for (let y = cell - 1; y < H; y += cell) ctx.fillRect(0, y, W, 1);
+  }
   const pal = () => CLUSTERS[st.cluster];
   function theme(){
     const P = pal(), r = document.documentElement.style;
@@ -204,10 +225,12 @@
     document.querySelectorAll('#dir button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===st.dir));
     $('size').value=st.size; $('sizeOut').textContent=st.size;
     $('den').value=st.density; $('denOut').textContent=st.density;
+    $('tex').value=st.tex; $('texOut').textContent=st.tex;
   }
   function render(){
     const P = pal();
     const { cols, rows } = draw($('cv'), st.w, st.h, { ...st, bg:P[st.bg], fg:P[st.fg] });
+    texture($('cv'), st.tex, st.seed);
     $('meta').textContent = `${P.name} · ${st.w} × ${st.h} · ${cols} × ${rows} cells · seed ${st.seed}`;
   }
   function setCluster(id, fromHash){
@@ -226,6 +249,7 @@
   $('dir').onclick = e => { const b=e.target.closest('button'); if(!b) return; st.dir=b.dataset.v; sync(); render(); };
   $('size').oninput = e => { st.size=+e.target.value; $('sizeOut').textContent=st.size; render(); };
   $('den').oninput = e => { st.density=+e.target.value; $('denOut').textContent=st.density; render(); };
+  $('tex').oninput = e => { st.tex=+e.target.value; $('texOut').textContent=st.tex; render(); };
   $('dims').onchange = e => { const [w,h]=e.target.value.split('x').map(Number); st.w=w; st.h=h; render(); };
   const reroll = () => { st.seed=(Math.random()*1e9)|0; render(); };
   $('roll').onclick = reroll; $('cv').onclick = reroll;

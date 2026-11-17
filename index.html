@@ -51,7 +51,8 @@ button,input,select{font:inherit;color:inherit}
 .switch button:hover{color:var(--ink)}
 .switch button[aria-pressed="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--strong)}
 .toggle{display:flex;align-items:center;gap:8px;border:none;background:none;padding:4px 0;cursor:pointer;font-size:12px;color:var(--ink)}
-.toggle .lbl{color:var(--grey)}
+.toggle .lbl{color:var(--grey);display:flex;opacity:.55}
+.toggle .lbl.on{opacity:1}
 .toggle .lbl.on{color:var(--ink);font-weight:600}
 .toggle .track{position:relative;width:40px;height:22px;border:1px solid var(--ink);background:var(--wash)}
 .toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--ink);transition:transform .18s ease}
@@ -172,6 +173,13 @@ select{width:100%;background:var(--paper);border:1px solid var(--faint);padding:
 .fig > figcaption.cap{display:none}
 .ss .fig > figcaption.cap{display:grid}
 
+.logo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.logo-tile{margin:0}
+.logo-tile .lt{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;padding:12%;border:1px solid var(--faint)}
+.logo-tile img{display:block;width:100%;height:auto}
+.logo-tile figcaption{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;color:var(--grey)}
+.logo-tile figcaption b{color:var(--ink);font-weight:600}
+@media (max-width:640px){.logo-grid{grid-template-columns:1fr}}
 /* gallery */
 .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
 .gallery figure:first-child{grid-column:1/-1}
@@ -270,8 +278,8 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
   <div class="page">
     <a class="lockup" id="lockup" href="#base" aria-label="Ethereum Foundation"></a>
     <nav class="switch" id="switch" aria-label="Brand"></nav>
-    <button class="toggle" id="modeSw" role="switch" aria-checked="false" aria-label="Dark mode">
-      <span class="lbl" id="lblLight">Light</span><span class="track"><span class="knob"></span></span><span class="lbl" id="lblDark">Dark</span>
+    <button class="toggle" id="modeSw" role="switch" aria-checked="false" aria-label="Night mode">
+      <span class="lbl" id="lblLight" title="Day"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1 1M12 12l1 1M13 3l-1 1M4 12l-1 1"/></g></svg></span><span class="track"><span class="knob"></span></span><span class="lbl" id="lblDark" title="Night"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg></span>
     </button>
   </div>
 </header>
@@ -301,22 +309,32 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
   <div id="overview" hidden></div>
 
 
+  <section class="sec" id="s1"><div class="page">
+    <div class="sh row"><div class="num">1.0</div><h2>Logotype</h2><div class="run"></div></div>
+    <div class="row">
+      <div class="c-margin"><p class="intro">Use the primary logo by default. Use the secondary, single-colour version where the full-colour diamond can't be reproduced. Pick the version made for your background.</p>
+        <div class="actions" style="margin-top:0"><button class="btn primary" id="logoPackBtn">Download logo pack</button></div>
+        <p class="small grey" id="logoPackNote" style="margin:8px 0 0">SVG and PNG · primary and secondary · for dark and light backgrounds</p></div>
+      <div class="c-main"><div class="logo-grid" id="logoGrid"></div></div>
+    </div>
+  </div></section>
+
   <section class="sec" id="s2"><div class="page">
-    <div class="sh row"><div class="num">1.0</div><h2>Colour</h2><div class="run"></div></div>
+    <div class="sh row"><div class="num">2.0</div><h2>Colour</h2><div class="run"></div></div>
     <div class="row">
       <div class="c-margin">
         <p class="intro">Use these colours exactly as specified. Click a hex value to copy it.</p>
       </div>
       <div class="c-main">
         <div class="swatches" id="swatches"></div>
-        <p class="label" style="margin:36px 0 0">1.1 Chart palette</p>
+        <p class="label" style="margin:36px 0 0">2.1 Chart palette</p>
         <div class="chart" id="chart"></div>
       </div>
     </div>
   </div></section>
 
   <section class="sec" id="s3"><div class="page">
-    <div class="sh row"><div class="num">2.0</div><h2>Typography</h2><div class="run"></div></div>
+    <div class="sh row"><div class="num">3.0</div><h2>Typography</h2><div class="run"></div></div>
     <div class="row">
       <div class="c-margin"><p class="intro">Two families for the whole Foundation. Funnel Sans sets headings and text; IBM Plex Mono sets the lockup and tags. Set flush left, ragged right.</p>
         <div class="actions" style="margin-top:0">
@@ -329,7 +347,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
           <div class="specimen"><div><div class="aa" style="font-weight:400">Aa</div><p class="small grey" style="margin:10px 0 0">Funnel Sans Regular<br>Text, 15/22</p></div><div class="set" style="font-weight:400;font-size:17px">Ethereum reaches users through wallets, applications and transaction infrastructure. Defaults decide what reaches them.</div></div>
           <div class="specimen"><div><div class="aa mono" style="font-size:clamp(52px,7vw,92px)">Aa</div><p class="small grey" style="margin:10px 0 0">IBM Plex Mono Regular<br>Lockup, tags, data</p></div><div class="set mono" style="font-size:15px">ethereum foundation<br>access layer<br>IN PRODUCTION · PUBLIC ALPHA</div></div>
         </div>
-        <p class="label" style="margin:40px 0 0">2.1 Emphasis</p>
+        <p class="label" style="margin:40px 0 0">3.1 Emphasis</p>
         <p class="small grey" style="margin:4px 0 0;max-width:62ch">Three variants, shared by every brand. Each cluster picks one as its default.</p>
         <div class="plates" id="plates"></div>
       </div>
@@ -337,7 +355,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
   </div></section>
 
   <section class="sec" id="s4"><div class="page">
-    <div class="sh row"><div class="num">3.0</div><h2>Pixel grid backgrounds</h2><div class="run"></div></div>
+    <div class="sh row"><div class="num">4.0</div><h2>Pixel grid backgrounds</h2><div class="run"></div></div>
     <div id="bgSlot"></div>
     <div class="row"><div class="c-margin"></div><div class="c-main"><div class="actions"><button class="btn" id="bgSave">Download this background · 1920 × 1080</button></div></div></div>
     <div class="row" hidden>
@@ -362,7 +380,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
           </div>
           <figure class="fig" style="min-width:0">
             <div class="stage"><canvas id="gCv"></canvas></div>
-            <figcaption class="cap"><b>Figure 3.1</b><span id="gMeta" class="mono"></span></figcaption>
+            <figcaption class="cap"><b>Figure 4.1</b><span id="gMeta" class="mono"></span></figcaption>
           </figure>
         </div>
       </div>
@@ -370,21 +388,21 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
   </div></section>
 
   <section class="sec" id="s5"><div class="page">
-    <div class="sh row"><div class="num">4.0</div><h2>Imagery</h2><div class="run"></div></div>
+    <div class="sh row"><div class="num">5.0</div><h2>Imagery</h2><div class="run"></div></div>
     <div id="gallery"></div>
   </div></section>
 
   <section class="sec" id="s6"><div class="page">
-    <div class="sh row"><div class="num">5.0</div><h2>Applications</h2><div class="run"></div></div>
+    <div class="sh row"><div class="num">6.0</div><h2>Applications</h2><div class="run"></div></div>
     <div class="row">
       <div class="c-margin"><p class="intro">Deck cover, OG image and square post, generated from the tokens. Text never sits on pixels; the grid clears around every text block.</p></div>
       <div class="c-main">
         <div class="tpl-grid">
-          <figure class="fig"><div class="tpl r169" id="tplCover"></div><figcaption class="cap"><b>Figure 5.1</b><span>Deck cover · 1920 × 1080</span></figcaption></figure>
-          <figure class="fig"><div class="tpl rsq" id="tplSq"></div><figcaption class="cap"><b>Figure 5.2</b><span>Social post · 1080 × 1080</span></figcaption></figure>
-          <figure class="fig" style="grid-column:1/2"><div class="tpl rog" id="tplOg"></div><figcaption class="cap"><b>Figure 5.3</b><span>OG image · 1200 × 630</span></figcaption></figure>
+          <figure class="fig"><div class="tpl r169" id="tplCover"></div><figcaption class="cap"><b>Figure 6.1</b><span>Deck cover · 1920 × 1080</span></figcaption></figure>
+          <figure class="fig"><div class="tpl rsq" id="tplSq"></div><figcaption class="cap"><b>Figure 6.2</b><span>Social post · 1080 × 1080</span></figcaption></figure>
+          <figure class="fig" style="grid-column:1/2"><div class="tpl rog" id="tplOg"></div><figcaption class="cap"><b>Figure 6.3</b><span>OG image · 1200 × 630</span></figcaption></figure>
         </div>
-        <p class="label" style="margin:44px 0 12px">5.1 The family, side by side</p>
+        <p class="label" style="margin:44px 0 12px">6.1 The family, side by side</p>
         <div class="side" id="sideBySide"></div>
       </div>
     </div>
@@ -394,7 +412,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
 
 </main>
 
-<footer><div class="page row"><div class="c-margin">Ethereum Foundation</div><div class="c-main">Graphics Standards Manual · Protocol, Access Layer and Public Sector. Follow these guidelines as specified.</div></div></footer>
+<footer><div class="page row"><div class="c-margin">Ethereum Foundation</div><div class="c-main">Graphics manual made with <span aria-label="love">♥</span> by the Digital Studio.</div></div></footer>
 
 <dialog id="lb" aria-label="Image viewer">
   <figure class="fig"><img id="lbImg" alt=""><figcaption class="cap"><b id="lbNum"></b><span id="lbCap"></span></figcaption></figure>
@@ -409,10 +427,10 @@ const standalone = !(window.claude && window.claude.use);
 /* ---------------- tokens ---------------- */
 const BASE = {
   id:'base', name:'Ethereum Foundation', lockup:'', logo:'ef-logo.svg',
-  summary:'One foundation, three clusters. Every cluster shares the logo, type and grid, and adds its own colour, pixel behaviour, emphasis and imagery. Pick a cluster below to open its full guidelines.',
+  summary:'This site helps the Ethereum Foundation\'s cluster teams adopt the brand. It brings the guidelines for every cluster into one place, so teams can create documents and branded assets faster and with confidence. Like the Infinite Garden of Ethereum, the system is made to grow: one shared root of logo, type and grid, with each cluster adding its own colour, imagery and character. Pick a cluster below to open its guidelines.',
   color:{
     dark:'#1E1F2E', light:'#F2F1EE', ink:'#1E1F2E', onDark:'#F4F3F0',
-    primary:'#9E69AC', accent:'#0DAFD2', secondary:'#F58B77', muted:'#8A8C99'
+    primary:'#9E69AC', accent:'#0DAFD2', secondary:'#F58B77', muted:'#8A8C99', neutral:'#E0E0E1'
   },
   type:{ display:'Funnel Sans', displayWeight:600, body:'Funnel Sans', mono:'IBM Plex Mono' },
   grid:{ unit:'square', columns:12, margins:'6.5% of width', pageNumbers:true },
@@ -522,7 +540,8 @@ const COLOR_META = {
   light:['Light','Backgrounds, and text on dark backgrounds'],
   primary:['Primary','Blocks, alternate grounds'],
   accent:['Accent','Pixels, titles, markers'],
-  secondary:['Secondary','Third colour, pixels and charts']
+  secondary:['Secondary','Third colour, pixels and charts'],
+  neutral:['Neutral','Rules, dividers and subtle backgrounds']
 };
 const TRIO_KEYS = ['accent','primary','secondary'];
 const fgOf = (B, key) => (key === 'trio' || key === 'logo') ? TRIO_KEYS.map(k => B.color[k]) : (B.color[key] || B.color.accent);
@@ -576,6 +595,20 @@ const displayName = id => id === 'base' ? 'Ethereum Foundation' : resolve(id).na
 /* ---------------- pixel engine ---------------- */
 function mulberry32(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const smooth = t => t*t*(3-2*t);
+/* fine grid texture (as on the Protocol website): small tiles with a slight random tint and a darker 1px seam.
+   Scaled to the canvas so it reads the same at every size; 50% matches the generator default. */
+function texture(cv, strength = 50, seed = 1){
+  const k = strength / 100, ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const cell = Math.max(3, Math.round(8 * W / 1920)), seam = Math.max(1, Math.round(W / 1920)), rnd = mulberry32(seed ^ 0x5bd1e995);
+  for (let y = 0; y < H; y += cell) for (let x = 0; x < W; x += cell) {
+    const v = (rnd() - 0.5) * 0.12 * k;
+    ctx.fillStyle = v > 0 ? `rgba(255,255,255,${v})` : `rgba(0,0,0,${-v})`;
+    ctx.fillRect(x, y, cell, cell);
+  }
+  ctx.fillStyle = `rgba(0,0,0,${0.10 * k})`;
+  for (let x = cell - seam; x < W; x += cell) ctx.fillRect(x, 0, seam, H);
+  for (let y = cell - seam; y < H; y += cell) ctx.fillRect(0, y, W, seam);
+}
 function drawPixels(cv, w, h, o){
   const px = Math.max(2, o.size);
   const cols = Math.ceil(w / px), rows = Math.ceil(h / px);
@@ -713,7 +746,7 @@ function applyTheme(B){
 function renderSwitch(){
   $('switch').innerHTML = brandIds().map(id => {
     const B = resolve(id);
-    return `<button data-id="${id}" aria-pressed="${id === current}" style="--c1:${B.color.dark};--c2:${B.color.accent}"><i></i>${esc(displayName(id))}</button>`;
+    return `<button data-id="${id}" aria-pressed="${id === current}" style="--c1:${B.color.dark};--c2:${B.color.accent}"><i></i>${esc(id === 'base' ? 'Intro' : displayName(id))}</button>`;
   }).join('');
 }
 function renderLockup(B){
@@ -726,7 +759,7 @@ function renderHero(B){
   renderLockup(B);
   $('heroEyebrow').textContent = '';
   $('heroEyebrow').hidden = true;
-  $('heroTitle').textContent = displayName(current);
+  $('heroTitle').textContent = current === 'base' ? 'Ethereum Foundation Cluster Branding' : displayName(current);
   $('heroText').textContent = B.summary || '';
   const own = ownKeys(current);
   const n = own ? Object.keys(own).filter(k => !['id','name','lockup','summary','covers'].includes(k)).length : 0;
@@ -820,7 +853,7 @@ function renderHighlights(B){
   const def = HL_NAMES[B.highlight] ? B.highlight : 'rule';
   $('plates').innerHTML = ['rule','marker','bar'].map((v, i) => `<figure class="fig">
     <div class="plate hl-${v}"><span class="small" style="opacity:.7">${displayName(current)}</span><h3><span class="hx">Know what you sign</span></h3></div>
-    <figcaption class="plate-cap"><span><b>2.1.${i+1}</b> ${HL_NAMES[v]}</span>${v === def ? '<span class="def">Default</span>' : ''}</figcaption>
+    <figcaption class="plate-cap"><span><b>3.1.${i+1}</b> ${HL_NAMES[v]}</span>${v === def ? '<span class="def">Default</span>' : ''}</figcaption>
     <p class="small grey" style="margin:2px 0 0">${HL_DESC[v]}</p></figure>`).join('');
 }
 
@@ -869,6 +902,7 @@ function backgroundsFor(id){
   const B = resolve(id), cv = document.createElement('canvas');
   bgCache[id] = BG_VARIANTS.map((v, i) => {
     drawPixels(cv, 1280, 720, bgOpts(B, v, i, 1280 / 1920));
+    texture(cv, 50, i + 1);
     const name = v.mode.charAt(0).toUpperCase() + v.mode.slice(1);
     return [cv.toDataURL('image/png'), `${name} · ${v.size} px · ${v.density}% · ${KEY_NAMES[v.fg]} on ${KEY_NAMES[v.bg]}`, 'Backgrounds', '16/9', 'bg'];
   });
@@ -887,7 +921,7 @@ function renderImagery(B){
   figNums = [];
   let imgN = 0;
   const row = (grp, gi) => {
-    const label = grp.bg ? '3.1' : grp.deck ? '5.2' : `4.${++imgN}`;
+    const label = grp.bg ? '4.1' : grp.deck ? '6.2' : `5.${++imgN}`;
     grp.items.forEach((i, n) => figNums[i] = `${label}.${n+1}`);
     const ar = galleryList[grp.items[0]][3] || (grp.name === 'Reference worlds' ? '7/3' : '16/9');
     const [aw, ah] = ar.split('/').map(Number);
@@ -919,7 +953,7 @@ function renderImagery(B){
 function renderWebsite(B){
   const w = B.website;
   if (!w) { $('webSlot').innerHTML = ''; return; }
-  const num = `5.${(B.deck && B.deck.length) ? 3 : 2}`;
+  const num = `6.${(B.deck && B.deck.length) ? 3 : 2}`;
   const host = w.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('webSlot').innerHTML = `<div class="row">
     <div class="c-margin"><div class="ss-meta"><span class="label">${num} Website</span><span class="small grey">${esc(w.desc)}</span></div>
@@ -928,6 +962,22 @@ function renderWebsite(B){
       <div class="bar"><i></i><i></i><i></i><span>${esc(host)}</span></div>
       <img src="${esc(w.img)}" alt="${esc(w.title)} website, hero section" loading="lazy"></a></div>
   </div>`;
+}
+
+/* 1.0 Logotype: the cluster's logo files; "Dark" files are for dark backgrounds, "Light" files for light backgrounds */
+const LOGO_PACK = {
+  protocol:        { name:'Protocol',      zip:'logo-packs/ef-protocol-logos.zip' },
+  'access-layer':  { name:'Access Layer',  zip:'logo-packs/ef-access-layer-logos.zip' },
+  'public-sector': { name:'Public Sector', zip:'logo-packs/ef-public-sector-logos.zip' }
+};
+function renderLogotype(B){
+  const L = LOGO_PACK[current];
+  $('s1').hidden = !L || current === 'base';
+  if (!L) { $('logoGrid').innerHTML = ''; return; }
+  const tiles = [['Primary','Dark','dark'],['Primary','Light','light'],['Secondary','Dark','dark'],['Secondary','Light','light']];
+  $('logoGrid').innerHTML = tiles.map(([kind, tone, bg], i) => `<figure class="logo-tile">
+    <div class="lt" style="background:${B.color[bg]}"><img src="logo-packs/${current}/${esc(L.name)} - ${kind} - ${tone}.png" alt="${esc(L.name)} ${kind.toLowerCase()} logo for ${bg} backgrounds" loading="lazy"></div>
+    <figcaption><span><b>1.${i+1}</b> ${kind}</span><span>On ${bg} backgrounds</span></figcaption></figure>`).join('');
 }
 let figNums = [], ssGroups = [];
 function setSlide(gi, n){
@@ -974,6 +1024,7 @@ function fillTpl(el, B, kind, w, h, seed, look){
   const clear = textRects(el, [...el.querySelectorAll('.in > *')].map(c => (c.classList.contains('t') || c.classList.contains('s')) ? textBox(c) : c), w);
   drawPixels(el.querySelector('canvas'), w, h, { mode: P.mode, dir,
     size: Math.max(6, Math.round(P.size * w / 1920 * 1.15)), density: P.density, bg: T.bg, fg: T.fg, seed, clear });
+  texture(el.querySelector('canvas'), 50, seed);
 }
 function renderTemplates(B){
   /* application examples: white text on dark grounds */
@@ -982,7 +1033,7 @@ function renderTemplates(B){
   fillTpl($('tplOg'), B, 'og', 600, 315, 12, white);
   fillTpl($('tplSq'), B, 'sq', 540, 540, 13, white);
   const sb = $('sideBySide');
-  sb.innerHTML = clusterIds().map((id, i) => `<figure class="fig"><div class="tpl r169" data-id="${id}" tabindex="0" role="button" aria-label="Open ${esc(displayName(id))}"></div><figcaption class="cap"><b>5.1.${i+1}</b><span>${esc(displayName(id))}</span></figcaption></figure>`).join('');
+  sb.innerHTML = clusterIds().map((id, i) => `<figure class="fig"><div class="tpl r169" data-id="${id}" tabindex="0" role="button" aria-label="Open ${esc(displayName(id))}"></div><figcaption class="cap"><b>6.1.${i+1}</b><span>${esc(displayName(id))}</span></figcaption></figure>`).join('');
   /* comparison tiles: the cluster's own cover, with white text */
   sb.querySelectorAll('.tpl').forEach(el => fillTpl(el, resolve(el.dataset.id), 'cover', 480, 270, 11, { text: '#FFFFFF' }));
 }
@@ -994,7 +1045,7 @@ function renderTokens(){
   document.querySelectorAll('#tkView button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === tkMode));
 }
 
-const SECTIONS = [['s2','Colour'],['s3','Typography'],['s4','Pixel grid backgrounds'],['s5','Imagery'],['s6','Applications']];
+const SECTIONS = [['s1','Logotype'],['s2','Colour'],['s3','Typography'],['s4','Pixel grid backgrounds'],['s5','Imagery'],['s6','Applications']];
 function renderToc(){
   const items = current === 'base'
     ? clusterIds().map((id, i) => [`ov-${id}`, displayName(id), `${i+1}.0`])
@@ -1041,7 +1092,7 @@ function renderAll(resetGenerator = true){
   if (!brandIds().includes(current)) current = DEFAULT_ID;
   const B = resolve(current);
   applyTheme(B); renderSwitch(); renderToc(); renderHero(B); renderOverview(); renderColors(B);
-  renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
+  renderLogotype(B); renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
   if (resetGenerator || !genOpts) resetGen(); else { syncGenUI(); renderGen(); }
 }
 
@@ -1131,7 +1182,26 @@ $('bgSave').onclick = () => {
   const gi = ssGroups.findIndex(g => g.bg); if (gi < 0) return;
   const n = ssGroups[gi].at, v = BG_VARIANTS[n], B = resolve(current), cv = document.createElement('canvas');
   drawPixels(cv, 1920, 1080, bgOpts(B, v, n, 1));
+  texture(cv, 50, n + 1);
   cv.toBlob(b => save(`ef-${current}-background-${String(n + 1).padStart(2, '0')}-1920x1080.png`, b), 'image/png');
+};
+
+$('logoPackBtn').onclick = async () => {
+  const L = LOGO_PACK[current]; if (!L) return;
+  const name = L.zip.split('/').pop();
+  /* GitHub Pages: the ready-made zip next to index.html */
+  if (standalone) { const a = document.createElement('a'); a.href = L.zip; a.download = name; document.body.appendChild(a); a.click(); a.remove(); return; }
+  /* claude.ai serves no .zip, so build the pack in the browser from the published SVG and PNG files */
+  try {
+    if (!window.JSZip) await new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); });
+    const zip = new JSZip(), root = `Logos - Ethereum Foundation - ${L.name}`;
+    for (const kind of ['Primary', 'Secondary']) for (const tone of ['Dark', 'Light']) for (const ext of ['svg', 'png']) {
+      const f = `${L.name} - ${kind} - ${tone}.${ext}`, r = await fetch(`logo-packs/${current}/${f}`);
+      if (!r.ok) throw 0;
+      zip.file(`${root}/${kind}/${f}`, await r.blob());
+    }
+    save(name, await zip.generateAsync({ type: 'blob' }));
+  } catch (e) { toast('Could not prepare the logo pack'); }
 };
 const slug = () => current === 'base' ? 'ef-base' : 'ef-' + current;
 $('gSave').onclick = () => $('gCv').toBlob(b => save(`${slug()}-pixels-${genOpts.mode}-${gen.w}x${gen.h}-${gen.seed}.png`, b), 'image/png');
