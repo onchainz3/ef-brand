@@ -181,6 +181,16 @@ select{width:100%;background:var(--paper);border:1px solid var(--faint);padding:
 .g169 img{aspect-ratio:16/9}
 /* slideshow */
 .ss-row + .ss-row{margin-top:56px}
+#deckSlot .ss-row{margin-top:56px}
+#bgSlot .ss-row{margin-top:0}
+#webSlot .row{margin-top:56px}
+.web-shot{display:block;border:1px solid var(--strong);text-decoration:none;color:inherit}
+.web-shot .bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--strong);font-family:var(--f-mono);font-size:11px;color:var(--grey);background:var(--paper)}
+.web-shot .bar i{width:8px;height:8px;border:1px solid var(--grey);display:inline-block}
+.web-shot .bar span{margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.web-shot img{display:block;width:100%;height:auto}
+.web-shot:hover img{opacity:.92}
+.web-shot:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .ss-meta{border-top:1px solid var(--ink);padding-top:8px}
 .ss-meta .label{display:block}
 .ss-stage{position:relative;border:1px solid var(--ink);background:var(--wash)}
@@ -328,9 +338,9 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
 
   <section class="sec" id="s4"><div class="page">
     <div class="sh row"><div class="num">3.0</div><h2>Pixel grid backgrounds</h2><div class="run"></div></div>
-    <div class="row">
-      <div class="c-margin"><p class="intro">One square grid for everyone. Each brand has its own default mode, scale, density and direction, marked ★. Click the field or press space for a new arrangement.</p>
-        <p class="intro" style="border-top:1px solid var(--strong);padding-top:10px"><b>Legibility rule.</b> The pattern must always be used so that other elements stay legible. Keep text, logos and images on a clear area of solid ground, never on top of pixels.</p></div>
+    <div id="bgSlot"></div>
+    <div class="row"><div class="c-margin"></div><div class="c-main"><div class="actions"><button class="btn" id="bgSave">Download this background · 1920 × 1080</button></div></div></div>
+    <div class="row" hidden>
       <div class="c-main">
         <div class="gen">
           <div class="ctrl">
@@ -378,19 +388,10 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
         <div class="side" id="sideBySide"></div>
       </div>
     </div>
+    <div id="deckSlot"></div>
+    <div id="webSlot"></div>
   </div></section>
 
-  <section class="sec" id="s7"><div class="page">
-    <div class="sh row"><div class="num">6.0</div><h2>Tokens</h2><div class="run"></div></div>
-    <div class="row">
-      <div class="c-margin"><p class="intro">A new cluster is just a file of overrides. The resolved version is the base with the add-on applied on top, ready for decks, sites and generators.</p></div>
-      <div class="c-main">
-        <div class="seg two" id="tkView"><button data-v="override" aria-pressed="true">Add-on only</button><button data-v="resolved" aria-pressed="false">Resolved</button></div>
-        <pre id="tkOut" style="margin-top:12px"></pre>
-        <div class="actions"><button class="btn" id="tkCopy">Copy JSON</button><button class="btn" id="tkSave">Download JSON</button></div>
-      </div>
-    </div>
-  </div></section>
 </main>
 
 <footer><div class="page row"><div class="c-margin">Ethereum Foundation</div><div class="c-main">Graphics Standards Manual · Protocol, Access Layer and Public Sector. Follow these guidelines as specified.</div></div></footer>
@@ -403,6 +404,8 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
 
 <script>
 (() => {
+/* hosted on claude.ai or standalone (e.g. GitHub Pages) */
+const standalone = !(window.claude && window.claude.use);
 /* ---------------- tokens ---------------- */
 const BASE = {
   id:'base', name:'Ethereum Foundation', lockup:'', logo:'ef-logo.svg',
@@ -430,12 +433,13 @@ const PRESETS = {
     id:'protocol', name:'Protocol', lockup:'protocol',
     summary:'Blue and lime. Ordered pixels that advance in one direction, like blocks in a chain.',
     color:{ dark:'#1B2160', primary:'#313A88', accent:'#D6F24A', ink:'#1B2160', light:'#ECEEF6' },
-    pixel:{ mode:'fade', dir:'right', size:40, density:48, bg:'primary', fg:'accent' },
+    pixel:{ mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent' },
     grain:.06, highlight:'bar',
     image:{ world:'Event cities and landmarks, such as the Gateway of India in Mumbai.', treatment:'Duotone illustration in blue and lime.', mask:'Ordered blocks entering from the side.' },
     voice:{ tone:'Technical and precise, for people building the protocol', sample:'Ship Hegotá together. Align on I* and PQ Ethereum.' },
     covers:{ title:'Mumbai L1 R&D Workshop', sub:'1–2 November 2026' },
     heroImage:['gallery/protocol-01.jpg','Domed station beside a river canyon'],
+    website:{ img:'web/protocol-mumbai.jpg', url:'https://protocol.ethereum.foundation/event/mumbai/', title:'Mumbai L1 R&D Workshop', desc:'Event site for the Protocol team: hero, schedule and travel information, built on the Protocol identity.' },
     gallery:[
       ['gallery/protocol-01.jpg','Domed station beside a river canyon'],
       ['gallery/protocol-02.jpg','Glass-domed observatory over a pastel valley'],
@@ -460,9 +464,9 @@ const PRESETS = {
   },
   'access-layer':{
     id:'access-layer', name:'Access Layer', lockup:'access layer',
-    summary:'Purple and neon blue. Scattered pixels rising from the edge, like the interfaces between users and the protocol.',
+    summary:'Purple and neon blue. Ordered pixels fading in from the right edge, like the interfaces between users and the protocol.',
     color:{ dark:'#2A0F2B', primary:'#4A1B52', accent:'#7DF2E4', ink:'#2A0F2B' },
-    pixel:{ mode:'scatter', dir:'up', size:30, density:62, bg:'dark', fg:'accent' },
+    pixel:{ mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent' },
     grain:.12, highlight:'marker',
     image:{ world:'Botanicals and fantasy landscapes.', treatment:'Dot halftone in the neon colour, or full-colour illustration in pinks and lilacs.', mask:'A mask that breaks into loose pixels at the edge.' },
     voice:{ tone:'Direct to builders, “we help you”', sample:'Ethereum reaches users through your products.' },
@@ -475,17 +479,33 @@ const PRESETS = {
       ['gallery/access-04.jpg','Rose garden path leading to a pink palace','Reference worlds','4/5'],
       ['gallery/access-05.jpg','Moonlit garden terrace with a statue, stairs and a floating city','Reference worlds','4/5'],
       ['gallery/access-06.jpg','Blossom-covered stone stair under lantern-lit arches','Reference worlds','4/5']
+    ],
+    deck:[
+      ['deck/access-layer-01.jpg','Applications Enablement — cover'],
+      ['deck/access-layer-02.jpg','Ethereum reaches users through your products'],
+      ['deck/access-layer-03.jpg','The Foundation\'s role'],
+      ['deck/access-layer-04.jpg','What self-sovereign use depends on'],
+      ['deck/access-layer-05.jpg','Ethereum should have all of it'],
+      ['deck/access-layer-06.jpg','The expensive failures sit at the access layer'],
+      ['deck/access-layer-07.jpg','App enablement, the ecosystem-facing team'],
+      ['deck/access-layer-08.jpg','What we\'re focused on right now'],
+      ['deck/access-layer-09.jpg','What working with us looks like'],
+      ['deck/access-layer-10.jpg','For wallet teams'],
+      ['deck/access-layer-11.jpg','What we want to learn from you'],
+      ['deck/access-layer-12.jpg','Glossary'],
+      ['deck/access-layer-13.jpg','Closing slide']
     ]
   },
   'public-sector':{
     id:'public-sector', name:'Public Sector', lockup:'public sector',
-    summary:'Green and yellow. Pixels spreading in waves from a centre, like a public square.',
+    summary:'Green and yellow. Ordered pixels fading in from the right edge.',
     color:{ dark:'#0F2A1E', primary:'#1E5A3C', accent:'#F2D64B', ink:'#0F2A1E', light:'#EEEEE6' },
-    pixel:{ mode:'ripple', dir:'none', size:28, density:44, bg:'dark', fg:'accent' },
+    pixel:{ mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent' },
     grain:.08, highlight:'rule',
     image:{ world:'Civic architecture: gardens, squares, domes.', treatment:'Soft full-colour illustration, no crypto imagery.', mask:'Rounded cluster cut-outs, never aggressive.' },
     voice:{ tone:'Institutional and clear, no jargon', sample:'Digital public infrastructure, sovereign by design.' },
     covers:{ title:'Digital public infrastructure', sub:'Sovereign by design' },
+    website:{ img:'web/public-sector.jpg', url:'https://publicsector.ethereum.foundation/', title:'Ethereum for digital public infrastructure', desc:'Public Sector website for governments, multilateral organisations and NGOs, built on the Public Sector identity.' },
     gallery:[
       ['gallery/public-01.jpg','Market square with a fountain above the lake','Reference worlds','16/9'],
       ['gallery/public-02.jpg','Planning table under an olive tree, aqueduct beyond','Reference worlds','16/9'],
@@ -498,10 +518,8 @@ const PRESETS = {
 };
 
 const COLOR_META = {
-  dark:['Dark ground','Covers, sites, main ground'],
-  light:['Light ground','Content slides, paper'],
-  ink:['Ink','Text on light grounds'],
-  onDark:['Text on dark','Text on dark grounds'],
+  dark:['Dark','Backgrounds, and text on light backgrounds'],
+  light:['Light','Backgrounds, and text on dark backgrounds'],
   primary:['Primary','Blocks, alternate grounds'],
   accent:['Accent','Pixels, titles, markers'],
   secondary:['Secondary','Third colour, pixels and charts']
@@ -545,10 +563,12 @@ const DEFAULT_ID = 'base';
 function brandIds(){ return ['base', ...Object.keys(PRESETS), ...Object.keys(custom)]; }
 const clusterIds = () => brandIds().filter(id => id !== 'base');
 function overrideOf(id){ return id === 'base' ? {} : (PRESETS[id] || custom[id] || {}); }
+/* two neutrals per brand: dark and light, used for both backgrounds and text */
+function twoTone(B){ B.color.ink = B.color.dark; B.color.onDark = B.color.light; return B; }
 function resolve(id){
   const base = merge(BASE, edits.base);
-  if (id === 'base') return base;
-  return merge(base, merge(overrideOf(id), edits[id]));
+  if (id === 'base') return twoTone(base);
+  return twoTone(merge(base, merge(overrideOf(id), edits[id])));
 }
 function ownKeys(id){ return id === 'base' ? null : merge(overrideOf(id), edits[id]); }
 const displayName = id => id === 'base' ? 'Ethereum Foundation' : resolve(id).name;
@@ -786,9 +806,8 @@ function renderColors(B){
   const own = (ownKeys(current) || {}).color || {};
   $('swatches').innerHTML = Object.keys(COLOR_META).map(k => {
     const [n, r] = COLOR_META[k]; const v = B.color[k]; if (!v) return '';
-    const tag = current === 'base' ? 'base' : (own[k] ? 'add-on' : 'inherited');
     return `<div class="sw"><div class="chip" style="--c:${v}" role="img" aria-label="${n}, ${v}"></div>
-      <div class="k">${n}<span>${tag}</span></div><div class="r">${r}</div>
+      <div class="k">${n}</div><div class="r">${r}</div>
       <dl class="spec"><dt>HEX</dt><dd><button data-copy="${v}" aria-label="Copy ${v}">${v.toUpperCase()}</button></dd><dt>RGB</dt><dd>${rgb(v).join(' ')}</dd></dl></div>`;
   }).join('');
   const c = B.color;
@@ -828,32 +847,87 @@ function renderGen(){
 function resetGen(){ genOpts = clone(resolve(current).pixel); syncGenUI(); renderGen(); }
 
 let galleryList = [], lbIndex = 0;
+
+/* ten ready-made backgrounds per cluster, generated from the cluster's own colours; text side stays clear on the left */
+const BG_VARIANTS = [
+  { mode:'fade',     size:40, density:48, bg:'dark',    fg:'accent'  },
+  { mode:'fade',     size:24, density:42, bg:'dark',    fg:'accent'  },
+  { mode:'clusters', size:32, density:46, bg:'dark',    fg:'accent'  },
+  { mode:'scatter',  size:28, density:34, bg:'dark',    fg:'accent'  },
+  { mode:'ripple',   size:32, density:46, bg:'dark',    fg:'accent'  },
+  { mode:'fade',     size:40, density:48, bg:'dark',    fg:'primary' },
+  { mode:'fade',     size:64, density:54, bg:'dark',    fg:'primary' },
+  { mode:'clusters', size:56, density:40, bg:'dark',    fg:'primary' },
+  { mode:'scatter',  size:28, density:40, bg:'dark',    fg:'primary' },
+  { mode:'ripple',   size:32, density:50, bg:'dark',    fg:'primary' }
+];
+const KEY_NAMES = { dark:'dark', light:'light', primary:'primary', accent:'accent' };
+const bgCache = {};
+function bgOpts(B, v, i, scale){ return { mode:v.mode, dir:'left', size:Math.max(4, Math.round(v.size * scale)), density:v.density, bg:B.color[v.bg], fg:B.color[v.fg], seed:101 + i * 7 }; }
+function backgroundsFor(id){
+  if (bgCache[id]) return bgCache[id];
+  const B = resolve(id), cv = document.createElement('canvas');
+  bgCache[id] = BG_VARIANTS.map((v, i) => {
+    drawPixels(cv, 1280, 720, bgOpts(B, v, i, 1280 / 1920));
+    const name = v.mode.charAt(0).toUpperCase() + v.mode.slice(1);
+    return [cv.toDataURL('image/png'), `${name} · ${v.size} px · ${v.density}% · ${KEY_NAMES[v.fg]} on ${KEY_NAMES[v.bg]}`, 'Backgrounds', '16/9', 'bg'];
+  });
+  return bgCache[id];
+}
 function renderImagery(B){
-  galleryList = B.gallery || [];
-  if (!galleryList.length) { $('gallery').innerHTML = `<div class="row"><div class="c-margin"></div><div class="c-main"><p class="empty">No reference images for ${esc(displayName(current))} yet.</p></div></div>`; return; }
+  /* reference images (section 4) and the presentation deck (section 5.2) share one slideshow engine */
+  galleryList = [...(current === 'base' ? [] : backgroundsFor(current)), ...(B.gallery || []), ...(B.deck || []).map(d => [d[0], d[1], 'Presentation deck', '16/9', 'deck'])];
   ssGroups = [];
   galleryList.forEach((g, i) => {
     const name = g[2] || 'Reference worlds';
     let grp = ssGroups.find(x => x.name === name);
-    if (!grp) { grp = { name, items: [], at: 0 }; ssGroups.push(grp); }
+    if (!grp) { grp = { name, items: [], at: 0, deck: g[4] === 'deck', bg: g[4] === 'bg' }; ssGroups.push(grp); }
     grp.items.push(i);
   });
   figNums = [];
-  $('gallery').innerHTML = ssGroups.map((grp, gi) => {
-    grp.items.forEach((i, n) => figNums[i] = `4.${gi+1}.${n+1}`);
+  let imgN = 0;
+  const row = (grp, gi) => {
+    const label = grp.bg ? '3.1' : grp.deck ? '5.2' : `4.${++imgN}`;
+    grp.items.forEach((i, n) => figNums[i] = `${label}.${n+1}`);
     const ar = galleryList[grp.items[0]][3] || (grp.name === 'Reference worlds' ? '7/3' : '16/9');
     const [aw, ah] = ar.split('/').map(Number);
     const [src0, cap0] = galleryList[grp.items[0]];
+    const unit = grp.deck ? 'pages' : grp.bg ? 'backgrounds' : 'images';
+    /* on claude.ai the generator is its own artifact; on GitHub Pages it sits next to index.html */
+    const gen = (standalone ? 'generator.html' : 'https://claude.ai/artifact/Mdf8oSPPP1WMyaFBK9tNbq') + '#' + (current === 'base' ? 'protocol' : current);
+    const meta = grp.bg
+      ? `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">Ten ready-made backgrounds in this cluster's colours. Download one, or make your own.</span></div>
+         <div class="actions" style="margin:14px 0 18px"><a class="btn primary" id="genLink" href="${gen}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the generator ↗</a></div>
+         <p class="small" style="border-top:1px solid var(--strong);padding-top:8px;margin:0;max-width:34ch"><b>Legibility rule.</b> Keep text, logos and images on solid ground, never on pixels.</p>`
+      : `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">${grp.items.length} ${unit}. Click a thumbnail to show it large; click the large ${grp.deck ? 'page' : 'image'} to view it full size.</span></div>`;
     return `<div class="row ss-row">
-      <div class="c-margin"><div class="ss-meta"><span class="label">4.${gi+1} ${esc(grp.name)}</span><span class="small grey">${grp.items.length} images. Click a thumbnail to show it large; click the large image to view it full size.</span></div></div>
+      <div class="c-margin">${meta}</div>
       <div class="c-main"><div class="ss${ah > aw ? ' tall' : ''}" data-g="${gi}" style="--ar:${ar}">
         <figure class="fig"><div class="ss-stage">
           <button class="ss-big" aria-label="View full size"><img src="${esc(src0)}" alt="${esc(cap0)}" loading="${gi === 0 ? 'eager' : 'lazy'}"></button>
-          <button class="ss-nav prev" aria-label="Previous image">←</button><button class="ss-nav next" aria-label="Next image">→</button>
+          <button class="ss-nav prev" aria-label="Previous">←</button><button class="ss-nav next" aria-label="Next">→</button>
         </div><figcaption class="cap"><b class="num">${figNums[grp.items[0]]}</b><span class="txt">${esc(cap0)}</span><span class="cnt">1 / ${grp.items.length}</span></figcaption></figure>
         <div class="thumbs" role="list">${grp.items.map((i, n) => `<button role="listitem" data-t="${n}" aria-label="Show ${esc(galleryList[i][1])}" aria-current="${n === 0}"><img src="${esc(galleryList[i][0])}" alt="" loading="lazy"></button>`).join('')}</div>
       </div></div></div>`;
-  }).join('');
+  };
+  $('bgSlot').innerHTML = ssGroups.map((g, gi) => g.bg ? row(g, gi) : '').join('');
+  const imgHtml = ssGroups.map((g, gi) => (g.deck || g.bg) ? '' : row(g, gi)).join('');
+  $('gallery').innerHTML = imgHtml || `<div class="row"><div class="c-margin"></div><div class="c-main"><p class="empty">No reference images for ${esc(displayName(current))} yet.</p></div></div>`;
+  $('deckSlot').innerHTML = ssGroups.map((g, gi) => g.deck ? row(g, gi) : '').join('');
+}
+
+function renderWebsite(B){
+  const w = B.website;
+  if (!w) { $('webSlot').innerHTML = ''; return; }
+  const num = `5.${(B.deck && B.deck.length) ? 3 : 2}`;
+  const host = w.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  $('webSlot').innerHTML = `<div class="row">
+    <div class="c-margin"><div class="ss-meta"><span class="label">${num} Website</span><span class="small grey">${esc(w.desc)}</span></div>
+      <div class="actions"><a class="btn primary" href="${esc(w.url)}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Visit the site ↗</a></div></div>
+    <div class="c-main"><a class="web-shot" href="${esc(w.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(w.title)} website">
+      <div class="bar"><i></i><i></i><i></i><span>${esc(host)}</span></div>
+      <img src="${esc(w.img)}" alt="${esc(w.title)} website, hero section" loading="lazy"></a></div>
+  </div>`;
 }
 let figNums = [], ssGroups = [];
 function setSlide(gi, n){
@@ -895,7 +969,8 @@ function fillTpl(el, B, kind, w, h, seed, look){
   el.innerHTML = T.html; el.style.background = T.bg;
   if (look && look.text) el.querySelectorAll('.in, .in .lk, .in .t, .in .s, .in .lk svg, .in .lk span').forEach(n => n.style.color = look.text);
   const P = B.pixel;
-  const dir = P.mode === 'ripple' ? 'up' : (P.dir === 'none' ? 'up' : P.dir);
+  /* applications may set their own direction so text on the left stays on solid ground */
+  const dir = B.tplDir || (P.dir === 'none' ? 'up' : P.dir);
   const clear = textRects(el, [...el.querySelectorAll('.in > *')].map(c => (c.classList.contains('t') || c.classList.contains('s')) ? textBox(c) : c), w);
   drawPixels(el.querySelector('canvas'), w, h, { mode: P.mode, dir,
     size: Math.max(6, Math.round(P.size * w / 1920 * 1.15)), density: P.density, bg: T.bg, fg: T.fg, seed, clear });
@@ -919,7 +994,7 @@ function renderTokens(){
   document.querySelectorAll('#tkView button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === tkMode));
 }
 
-const SECTIONS = [['s2','Colour'],['s3','Typography'],['s4','Pixel grid backgrounds'],['s5','Imagery'],['s6','Applications'],['s7','Tokens']];
+const SECTIONS = [['s2','Colour'],['s3','Typography'],['s4','Pixel grid backgrounds'],['s5','Imagery'],['s6','Applications']];
 function renderToc(){
   const items = current === 'base'
     ? clusterIds().map((id, i) => [`ov-${id}`, displayName(id), `${i+1}.0`])
@@ -966,7 +1041,7 @@ function renderAll(resetGenerator = true){
   if (!brandIds().includes(current)) current = DEFAULT_ID;
   const B = resolve(current);
   applyTheme(B); renderSwitch(); renderToc(); renderHero(B); renderOverview(); renderColors(B);
-  renderHighlights(B); renderImagery(B); renderTemplates(B); renderTokens();
+  renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
   if (resetGenerator || !genOpts) resetGen(); else { syncGenUI(); renderGen(); }
 }
 
@@ -978,7 +1053,7 @@ $('switch').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   go(b.dataset.id);
 });
-$('gallery').addEventListener('click', e => {
+['gallery','deckSlot','bgSlot'].forEach(id => $(id).addEventListener('click', e => {
   const ss = e.target.closest('.ss'); if (!ss) return;
   const gi = +ss.dataset.g, grp = ssGroups[gi];
   const t = e.target.closest('[data-t]');
@@ -986,13 +1061,13 @@ $('gallery').addEventListener('click', e => {
   if (e.target.closest('.ss-nav.prev')) return setSlide(gi, grp.at - 1);
   if (e.target.closest('.ss-nav.next')) return setSlide(gi, grp.at + 1);
   if (e.target.closest('.ss-big')) { showLb(grp.items[grp.at]); $('lb').showModal(); }
-});
-$('gallery').addEventListener('keydown', e => {
+}));
+['gallery','deckSlot','bgSlot'].forEach(id => $(id).addEventListener('keydown', e => {
   const ss = e.target.closest('.ss'); if (!ss || !/Arrow(Left|Right)/.test(e.key)) return;
   const gi = +ss.dataset.g; e.preventDefault();
   setSlide(gi, ssGroups[gi].at + (e.key === 'ArrowRight' ? 1 : -1));
   ss.querySelector(`.thumbs button[data-t="${ssGroups[gi].at}"]`).focus({ preventScroll: true });
-});
+}));
 $('lbPrev').onclick = () => showLb(lbIndex - 1);
 $('lbNext').onclick = () => showLb(lbIndex + 1);
 $('lbClose').onclick = () => $('lb').close();
@@ -1037,8 +1112,7 @@ addEventListener('keydown', e => { if (e.code === 'Space' && !/INPUT|SELECT|BUTT
 /* downloads via capability */
 let dl = null;
 /* inside claude.ai downloads go through the capability; hosted anywhere else (e.g. GitHub Pages) a plain link works */
-const standalone = !(window.claude && window.claude.use);
-function updateDl(){ const ok = !!dl || standalone; $('gSave').hidden = !ok; $('tkSave').hidden = !ok; }
+function updateDl(){ const ok = !!dl || standalone; $('gSave').hidden = !ok; $('bgSave').hidden = !ok; }
 updateDl();
 (async () => { try { dl = window.claude?.use ? await window.claude.use('downloads') : null; } catch (e) { dl = null; } updateDl(); })();
 async function save(filename, blob){
@@ -1052,12 +1126,16 @@ async function save(filename, blob){
   try { await dl.save({ filename, data: blob }); toast('Download started'); }
   catch (e) { if (e && e.code !== 'declined' && e.code !== 'not_granted') toast('Could not download the file'); }
 }
+
+$('bgSave').onclick = () => {
+  const gi = ssGroups.findIndex(g => g.bg); if (gi < 0) return;
+  const n = ssGroups[gi].at, v = BG_VARIANTS[n], B = resolve(current), cv = document.createElement('canvas');
+  drawPixels(cv, 1920, 1080, bgOpts(B, v, n, 1));
+  cv.toBlob(b => save(`ef-${current}-background-${String(n + 1).padStart(2, '0')}-1920x1080.png`, b), 'image/png');
+};
 const slug = () => current === 'base' ? 'ef-base' : 'ef-' + current;
 $('gSave').onclick = () => $('gCv').toBlob(b => save(`${slug()}-pixels-${genOpts.mode}-${gen.w}x${gen.h}-${gen.seed}.png`, b), 'image/png');
-$('tkSave').onclick = () => save(`${slug()}-${tkMode === 'resolved' || current === 'base' ? 'resolved' : 'addon'}.json`, new Blob([$('tkOut').textContent], {type:'application/json'}));
 
-$('tkView').onclick = e => { const b = e.target.closest('button'); if (!b) return; tkMode = b.dataset.v; renderTokens(); };
-$('tkCopy').onclick = () => copy($('tkOut').textContent);
 
 
 function copy(text){

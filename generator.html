@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixel Grid Background Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Layout: control rail on the left, live canvas on the right. The rail takes the cluster's dark colour,
+     controls take its accent, so the tool itself wears the theme it is generating. */
+  :root{
+    --bg:#15181c; --panel:#1b1f24; --raise:#22272e; --line:#2a2f36;
+    --text:#e8ebee; --muted:#878e97; --accent:#6ea8fe; --accent-ink:#0d1014; --radius:2px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:'Funnel Sans','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow:hidden;transition:background .2s ease}
+  .app{display:flex;height:100%;width:100%}
+  .rail{width:320px;flex:0 0 320px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+  .rail-head{padding:20px 20px 18px;border-bottom:1px solid var(--line)}
+  .rail-head h1{font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .rail-head p{margin-top:4px;color:var(--muted);font-size:12px;max-width:34ch}
+  .rail-head a{color:var(--muted);font-size:12px;display:inline-block;margin-top:10px}
+  .group{padding:16px 20px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+  .label-row{display:flex;justify-content:space-between;align-items:baseline}
+  label,.lbl{font-size:12px;font-weight:500;color:var(--muted)}
+  .readout{font-size:12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+  select{font:inherit;font-size:13px;width:100%;color:var(--text);background:var(--raise);border:1px solid var(--line);border-radius:var(--radius);padding:9px 10px;cursor:pointer}
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .seg.five{grid-template-columns:repeat(5,1fr)}
+  .seg button{font:inherit;font-size:12px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:var(--radius);padding:8px;cursor:pointer;text-align:left}
+  .seg.five button{text-align:center;padding:8px 0}
+  .seg button:hover{color:var(--text)}
+  .seg button[aria-pressed="true"]{color:var(--accent-ink);background:var(--accent);border-color:transparent;font-weight:600}
+  .swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .swatches button{aspect-ratio:1;border:1px solid var(--line);border-radius:var(--radius);background:var(--c);cursor:pointer;position:relative}
+  .swatches button[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:2px}
+  .swatches + .hex{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  button.btn{font:inherit;font-size:13px;font-weight:500;color:var(--text);background:var(--raise);border:1px solid var(--line);border-radius:var(--radius);padding:9px 12px;cursor:pointer}
+  button.btn:hover{border-color:var(--muted)}
+  button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:600}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .actions{padding:16px 20px;display:grid;gap:8px;margin-top:auto}
+  .hint{color:var(--muted);font-size:11px;padding:0 20px 18px}
+  .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden}
+  canvas{max-width:100%;max-height:100%;image-rendering:pixelated;display:block;cursor:crosshair;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .meta{position:absolute;left:28px;bottom:14px;color:var(--muted);font-size:11px;font-family:'IBM Plex Mono',monospace;pointer-events:none}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;font-weight:600}
+  @media (max-width:860px){
+    body{overflow:auto}
+    .app{flex-direction:column;height:auto;min-height:100%}
+    .stage{order:-1;min-height:46vh;padding:16px}
+    .rail{width:100%;flex:1 1 auto;border-right:none;border-top:1px solid var(--line)}
+    .rail-head,.group,.actions,.hint{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="rail-head">
+      <h1>Pixel Grid Background Generator</h1>
+      <p>Make a background in a cluster's colours. Keep text, logos and images on solid ground, never on pixels.</p>
+      <a href="index.html" id="back">← Back to the guidelines</a>
+    </div>
+
+    <div class="group">
+      <label for="cluster">Cluster</label>
+      <select id="cluster">
+        <option value="protocol">Protocol</option>
+        <option value="access-layer">Access Layer</option>
+        <option value="public-sector">Public Sector</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <div class="label-row"><span class="lbl">Background</span></div>
+      <div class="swatches" id="swBg"></div>
+      <div class="label-row"><span class="lbl">Pixels</span></div>
+      <div class="swatches" id="swFg"></div>
+    </div>
+
+    <div class="group">
+      <span class="lbl">Mode</span>
+      <div class="seg" id="mode">
+        <button data-v="fade">Fade</button><button data-v="clusters">Clusters</button><button data-v="scatter">Scatter</button><button data-v="ripple">Ripple</button>
+      </div>
+      <span class="lbl">Direction</span>
+      <div class="seg five" id="dir">
+        <button data-v="none" aria-label="No direction">·</button><button data-v="up" aria-label="From the bottom">↑</button><button data-v="down" aria-label="From the top">↓</button><button data-v="right" aria-label="From the left">→</button><button data-v="left" aria-label="From the right">←</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label-row"><label for="size">Pixel size</label><span class="readout"><span id="sizeOut">40</span> px</span></div>
+      <input type="range" id="size" min="6" max="120" value="40">
+      <div class="label-row"><label for="den">Density</label><span class="readout"><span id="denOut">48</span>%</span></div>
+      <input type="range" id="den" min="2" max="98" value="48">
+    </div>
+
+    <div class="group">
+      <label for="dims">Format</label>
+      <select id="dims">
+        <option value="1920x1080">Slide / desktop · 1920 × 1080</option>
+        <option value="1200x630">OG image · 1200 × 630</option>
+        <option value="1080x1080">Square · 1080 × 1080</option>
+        <option value="1080x1920">Story · 1080 × 1920</option>
+        <option value="2560x1440">Large desktop · 2560 × 1440</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="roll">Generate another</button>
+      <button class="btn" id="save">Download PNG</button>
+      <button class="btn" id="reset">Reset to cluster preset</button>
+    </div>
+    <p class="hint">Click the canvas or press space for a new arrangement.</p>
+  </aside>
+  <main class="stage"><canvas id="cv" aria-label="Generated pixel background"></canvas><div class="meta" id="meta"></div></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  /* cluster palettes: kept in sync with the guidelines (index.html) */
+  const CLUSTERS = {
+    protocol:        { name:'Protocol',            dark:'#1B2160', light:'#ECEEF6', primary:'#313A88', accent:'#D6F24A' },
+    'access-layer':  { name:'Access Layer',        dark:'#2A0F2B', light:'#F2F1EE', primary:'#4A1B52', accent:'#7DF2E4' },
+    'public-sector': { name:'Public Sector',       dark:'#0F2A1E', light:'#EEEEE6', primary:'#1E5A3C', accent:'#F2D64B' }
+  };
+  const PRESET = { mode:'fade', dir:'left', size:40, density:48, bg:'dark', fg:'accent' };
+  const KEYS = ['dark','light','primary','accent'];
+  const $ = id => document.getElementById(id);
+  const st = { cluster:'protocol', ...PRESET, w:1920, h:1080, seed:(Math.random()*1e9)|0 };
+
+  const rgb = h => [1,3,5].map(i => parseInt(h.slice(i,i+2),16));
+  const lum = h => { const [r,g,b] = rgb(h); return (0.299*r+0.587*g+0.114*b)/255; };
+  const clamp = (v,lo=0,hi=1) => v<lo?lo:v>hi?hi:v;
+  const smooth = t => t*t*(3-2*t);
+  const mulberry32 = a => () => { a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+
+  /* same pixel engine as the guidelines */
+  function draw(cv, w, h, o){
+    const px = Math.max(2,o.size), cols = Math.ceil(w/px), rows = Math.ceil(h/px);
+    const rnd = mulberry32(o.seed), d = o.density/100;
+    const g = (x,y) => { switch(o.dir){ case 'up': return y/(rows-1||1); case 'down': return 1-y/(rows-1||1); case 'right': return 1-x/(cols-1||1); case 'left': return x/(cols-1||1); default: return null; } };
+    let field = null;
+    if (o.mode === 'clusters') {
+      const s = 4+Math.floor(rnd()*4), gw = Math.ceil(cols/s)+2, gh = Math.ceil(rows/s)+2;
+      const grid = new Float32Array(gw*gh); for (let i=0;i<grid.length;i++) grid[i]=rnd();
+      const at = (cx,cy) => grid[Math.min(cy,gh-1)*gw+Math.min(cx,gw-1)];
+      field = (x,y) => { const fx=x/s, fy=y/s, x0=Math.floor(fx), y0=Math.floor(fy), tx=smooth(fx-x0), ty=smooth(fy-y0);
+        return (at(x0,y0)*(1-tx)+at(x0+1,y0)*tx)*(1-ty)+(at(x0,y0+1)*(1-tx)+at(x0+1,y0+1)*tx)*ty; };
+    } else if (o.mode === 'ripple') {
+      const cx=(0.25+rnd()*0.5)*cols, cy=(0.35+rnd()*0.5)*rows, f=(0.28+rnd()*0.22)*(40/Math.max(cols,20));
+      field = (x,y) => 0.5+0.5*Math.cos(Math.hypot(x-cx,y-cy)*f*6);
+    }
+    const off = document.createElement('canvas'); off.width=cols; off.height=rows;
+    const c = off.getContext('2d'), img = c.createImageData(cols,rows), D = img.data;
+    const A = rgb(o.fg), B = rgb(o.bg);
+    for (let y=0;y<rows;y++) for (let x=0;x<cols;x++){
+      let p; const gv = g(x,y);
+      if (o.mode==='scatter') p=d;
+      else if (o.mode==='fade') p=clamp(((gv ?? y/(rows-1||1))+d-1)*2.6+0.12);
+      else if (o.mode==='clusters') p=clamp((field(x,y)-(1-d))*3.2+0.5);
+      else p=clamp((field(x,y)+d-1)*3+0.25);
+      if (o.mode!=='fade' && gv!==null) p*=clamp((gv-0.3)/0.55);
+      const col = rnd()<p ? A : B, i=(y*cols+x)*4;
+      D[i]=col[0]; D[i+1]=col[1]; D[i+2]=col[2]; D[i+3]=255;
+    }
+    c.putImageData(img,0,0);
+    cv.width=w; cv.height=h;
+    const ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(off,0,0,cols,rows,0,0,cols*px,rows*px);
+    return {cols,rows};
+  }
+
+  const pal = () => CLUSTERS[st.cluster];
+  function theme(){
+    const P = pal(), r = document.documentElement.style;
+    r.setProperty('--bg', P.dark);
+    r.setProperty('--panel', P.dark);
+    r.setProperty('--raise', 'rgba(255,255,255,.06)');
+    r.setProperty('--line', 'rgba(255,255,255,.14)');
+    r.setProperty('--text', P.light);
+    r.setProperty('--muted', 'rgba(255,255,255,.62)');
+    r.setProperty('--accent', P.accent);
+    r.setProperty('--accent-ink', lum(P.accent) > .5 ? P.dark : '#FFFFFF');
+    document.title = `Pixel Grid Background Generator · ${P.name}`;
+  }
+  function swatches(el, key){
+    const P = pal();
+    el.innerHTML = KEYS.filter(k => P[k]).map(k => `<button data-k="${k}" style="--c:${P[k]}" aria-label="${k} ${P[k]}" aria-pressed="${st[key]===k}" title="${k} · ${P[k]}"></button>`).join('');
+  }
+  function sync(){
+    $('cluster').value = st.cluster;
+    swatches($('swBg'),'bg'); swatches($('swFg'),'fg');
+    document.querySelectorAll('#mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===st.mode));
+    document.querySelectorAll('#dir button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===st.dir));
+    $('size').value=st.size; $('sizeOut').textContent=st.size;
+    $('den').value=st.density; $('denOut').textContent=st.density;
+  }
+  function render(){
+    const P = pal();
+    const { cols, rows } = draw($('cv'), st.w, st.h, { ...st, bg:P[st.bg], fg:P[st.fg] });
+    $('meta').textContent = `${P.name} · ${st.w} × ${st.h} · ${cols} × ${rows} cells · seed ${st.seed}`;
+  }
+  function setCluster(id, fromHash){
+    if (!CLUSTERS[id]) id = 'protocol';
+    st.cluster = id;
+    if (!CLUSTERS[id][st.bg]) st.bg = 'dark';
+    if (!CLUSTERS[id][st.fg]) st.fg = 'accent';
+    if (!fromHash && location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
+    theme(); sync(); render();
+  }
+
+  $('cluster').onchange = e => setCluster(e.target.value);
+  $('swBg').onclick = e => { const b=e.target.closest('[data-k]'); if(!b) return; st.bg=b.dataset.k; sync(); render(); };
+  $('swFg').onclick = e => { const b=e.target.closest('[data-k]'); if(!b) return; st.fg=b.dataset.k; sync(); render(); };
+  $('mode').onclick = e => { const b=e.target.closest('button'); if(!b) return; st.mode=b.dataset.v; sync(); render(); };
+  $('dir').onclick = e => { const b=e.target.closest('button'); if(!b) return; st.dir=b.dataset.v; sync(); render(); };
+  $('size').oninput = e => { st.size=+e.target.value; $('sizeOut').textContent=st.size; render(); };
+  $('den').oninput = e => { st.density=+e.target.value; $('denOut').textContent=st.density; render(); };
+  $('dims').onchange = e => { const [w,h]=e.target.value.split('x').map(Number); st.w=w; st.h=h; render(); };
+  const reroll = () => { st.seed=(Math.random()*1e9)|0; render(); };
+  $('roll').onclick = reroll; $('cv').onclick = reroll;
+  $('reset').onclick = () => { Object.assign(st, PRESET); sync(); render(); toast('Preset restored'); };
+  addEventListener('keydown', e => { if (e.code==='Space' && !/INPUT|SELECT|BUTTON/.test(e.target.tagName)) { e.preventDefault(); reroll(); } });
+  addEventListener('hashchange', () => { const h=location.hash.slice(1); if (h && h!==st.cluster) setCluster(h, true); });
+
+  /* downloads: inside claude.ai through the downloads capability, elsewhere a plain link */
+  let dl = null; const standalone = !(window.claude && window.claude.use);
+  (async () => { try { dl = window.claude?.use ? await window.claude.use('downloads') : null; } catch(e){ dl=null; } $('save').hidden = !(dl || standalone); })();
+  $('save').hidden = !standalone;
+  $('save').onclick = () => $('cv').toBlob(async blob => {
+    const name = `ef-${st.cluster}-pixels-${st.mode}-${st.w}x${st.h}-${st.seed}.png`;
+    if (dl) { try { await dl.save({ filename:name, data:blob }); toast('Download started'); } catch(e){} return; }
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 'image/png');
+
+  let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,1500); }
+  $('back').href = (standalone ? 'index.html' : 'https://claude.ai/artifact/NcZms87wEyHYRUwLUx9227') + '#' + (location.hash.slice(1) || 'protocol');
+
+  setCluster(location.hash.slice(1) || 'protocol', true);
+})();
+</script>
+</body>
+</html>
