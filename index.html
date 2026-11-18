@@ -80,6 +80,12 @@ h1{font-weight:500;font-size:clamp(44px,7vw,96px);line-height:.95;letter-spacing
 .cap{display:grid;grid-template-columns:auto 1fr;gap:12px;margin-top:8px;font-size:12px;color:var(--grey)}
 .cap b{color:var(--ink);font-weight:600}
 .cover .frame{aspect-ratio:16/7}
+/* animated cluster banner: no outline, text on the solid left side */
+#heroFrame{border:0;container-type:inline-size}
+.hb{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2.2cqw;padding:0 0 0 5.5cqw;color:#FFFFFF;pointer-events:none;max-width:44%}
+.hb svg{height:3.6cqw;width:auto;color:#FFFFFF}
+.hb h2{margin:0;font-family:'Funnel Display','Funnel Sans',sans-serif;font-weight:800;font-size:6.4cqw;line-height:.95;letter-spacing:-.02em}
+.hb p{margin:0;font-size:1.55cqw;line-height:1.35;opacity:.85;max-width:30ch}
 .inherit{display:inline-block;margin-top:18px;font-family:var(--f-mono);font-size:12px;border:1px solid var(--ink);padding:5px 9px}
 
 /* sections */
@@ -315,7 +321,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
       </div>
     </div>
     <div class="c-main">
-      <figure class="fig" id="heroFig"><div class="frame" id="heroFrame"><canvas id="heroCv"></canvas></div>
+      <figure class="fig" id="heroFig"><div class="frame" id="heroFrame"><canvas id="heroCv"></canvas><div class="hb" id="heroBan"></div></div>
         <figcaption class="cap"><b>Figure 0.1</b><span id="heroCap"></span></figcaption></figure>
       <div class="small grey" id="heroEyebrow" style="margin-top:36px">Base brand</div>
       <h1 id="heroTitle">Ethereum Foundation</h1>
@@ -478,6 +484,7 @@ const PRESETS = {
     voice:{ tone:'Technical and precise, for people building the protocol', sample:'Ship Hegotá together. Align on I* and PQ Ethereum.' },
     covers:{ title:'Mumbai L1 R&D Workshop', sub:'1–2 November 2026' },
     heroImage:['gallery/protocol-01.jpg','Domed station beside a river canyon'],
+    bannerSub:'Long-term research, specifications and testing for Ethereum’s core protocol.',
     deckCover:{ img:'web/deck-gateway.jpg', pos:'55% 50%', date:'1–2 November 2026', title:'Mumbai L1\nR&D Workshop', items:['Glamsterdam Takeaways','Hegotá Shipment Planning','I* and Post-Quantum Roadmap'] },
     website:{ img:'web/protocol-mumbai.jpg', url:'https://protocol.ethereum.foundation/event/mumbai/', title:'Mumbai L1 R&D Workshop', desc:'Event site for the Protocol team: hero, schedule and travel information, built on the Protocol identity.' },
     gallery:[
@@ -512,6 +519,7 @@ const PRESETS = {
     voice:{ tone:'Direct to builders, “we help you”', sample:'Ethereum reaches users through your products.' },
     covers:{ title:'Applications Enablement', sub:'Who we are, how we work, and what you can expect of us.' },
     heroImage:['gallery/access-02.jpg','Garden pond below floating islands and a pink moon'],
+    bannerSub:'Helping the products people already trust keep Ethereum’s guarantees intact.',
     gallery:[
       ['gallery/access-01.jpg','Wisteria terrace with a table set above the lake','Reference worlds','4/5'],
       ['gallery/access-02.jpg','Garden pond below floating islands and a pink moon','Reference worlds','4/5'],
@@ -547,6 +555,7 @@ const PRESETS = {
     image:{ world:'Civic architecture: gardens, squares, domes.', treatment:'Soft full-colour illustration, no crypto imagery.', mask:'Rounded cluster cut-outs, never aggressive.' },
     voice:{ tone:'Institutional and clear, no jargon', sample:'Digital public infrastructure, sovereign by design.' },
     covers:{ title:'Digital public infrastructure', sub:'Sovereign by design' },
+    bannerSub:'Ethereum for digital public infrastructure, sovereign by design.',
     deckCover:{ img:'gallery/public-01.jpg', pos:'55% 50%', date:'Ethereum for public infrastructure', title:'Digital public\ninfrastructure', items:['Sovereign by design','Verifiable records','Coordination without a central operator'] },
     website:{ img:'web/public-sector.jpg', url:'https://publicsector.ethereum.foundation/', title:'Ethereum for digital public infrastructure', desc:'Public Sector website for governments, multilateral organisations and NGOs, built on the Public Sector identity.' },
     gallery:[
@@ -795,26 +804,46 @@ function renderHero(B){
   const isBase = current === 'base';
   $('heroFig').hidden = isBase;
   $('heroEyebrow').style.marginTop = isBase ? '0' : '36px';
-  if (isBase) return;
-  const fr = $('heroFrame').getBoundingClientRect();
-  const w = Math.max(320, Math.round(fr.width)), h = Math.max(140, Math.round(fr.height));
-  const P = B.pixel;
-  const bg = P.bg === 'light' ? B.color.light : (P.bg === 'primary' ? B.color.primary : B.color.dark);
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cell = Math.max(4, Math.round(P.size * 0.6 * dpr));
-  const cv = $('heroCv');
-  /* banner: the cluster's dark colour only; the image dissolves into it in pixel blocks */
-  drawPixels(cv, Math.round(w * dpr), Math.round(h * dpr), { ...P, size: cell, bg: B.color.dark, fg: B.color.dark, seed: 7 });
-  $('heroCap').textContent = `Pixel field, ${MODE_NAMES[P.mode]}, ${DIR_NAMES[P.dir]}, density ${P.density}%.`;
-  /* header image: one of the cluster's references, pixel-masked into the pattern from the left */
-  const hero = B.heroImage || (B.gallery && B.gallery[0]);
-  if (!hero) return;
-  const token = ++heroToken;
-  loadImg(hero[0]).then(img => {
-    if (token !== heroToken) return;
-    paintHeroImage(cv, img, cell, 23);
-    $('heroCap').textContent = `Dark ground with a pixel-masked image: ${hero[1]}.`;
-  }).catch(() => {});
+  /* clusters: title and subtitle live in the animated banner only */
+  $('heroTitle').hidden = !isBase; $('heroText').hidden = !isBase;
+  if (isBase) { cancelAnimationFrame(heroRAF); return; }
+  renderHeroLoop(B);
+}
+/* animated banner: the motion generator's "Random dissolve" over the cluster image, looping every 10 s.
+   The left side stays solid dark, where the logo, title and subtitle sit. */
+let heroRAF = 0, heroVisible = true, heroObs = null;
+function renderHeroLoop(B){
+  cancelAnimationFrame(heroRAF);
+  const fr = $('heroFrame'), cv = $('heroCv'), ctx = cv.getContext('2d');
+  const r = fr.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.width = Math.max(640, Math.round(r.width * dpr)), H = cv.height = Math.max(280, Math.round(r.height * dpr));
+  const cols = 44, cell = Math.ceil(W / cols), rows = Math.ceil(H / cell), last = cols - 1, TAU = Math.PI * 2;
+  const dark = B.color.dark, hero = B.heroImage || (B.gallery && B.gallery[0]);
+  const lock = logoBox[current] ? `<svg viewBox="${logoBox[current]}" role="img" aria-label="ethereum foundation ${esc(B.lockup || '')}"><use href="#logo-${current}"/></svg>` : '';
+  $('heroBan').innerHTML = `${lock}<h2>${esc(displayName(current))}</h2><p>${esc(B.bannerSub || '')}</p>`;
+  const k = [], h1 = [];
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) { k.push(2 + Math.floor(hash2(i, j, 32) * 3)); h1.push(hash2(i, j, 31)); }
+  let img = null; if (hero) loadImg(hero[0]).then(im => { img = im; if (reduce) frame(0); }).catch(() => {});
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const frame = p => {
+    ctx.fillStyle = dark; ctx.fillRect(0, 0, W, H);
+    if (img) { const sc = Math.max(W * .62 / img.naturalWidth, H / img.naturalHeight), dw = img.naturalWidth * sc, dh = img.naturalHeight * sc; ctx.drawImage(img, W - dw + (dw - W * .62) / 2, (H - dh) / 2, dw, dh); }
+    const w = [0, 1, 2].map(m => .5 + .5 * Math.sin(TAU * (p + m / 3)));
+    ctx.fillStyle = dark;
+    for (let j = 0, n = 0; j < rows; j++) for (let i = 0; i < cols; i++, n++) {
+      const x = i / 3, y = j / 3;
+      const nz = (w[0] * vnoise(x, y, 21) + w[1] * vnoise(x + 37.1, y + 11.3, 22) + w[2] * vnoise(x - 19.7, y + 53.9, 23)) / 1.5;
+      const f = .5 + .5 * Math.sin(TAU * (k[n] * p + h1[n]));
+      const v = Math.min(1, Math.max(0, (nz - .5) * 3.2 + .5)) * .75 + f * .25;
+      if (i / last < .64 + .5 * (v - .5)) ctx.fillRect(i * cell, j * cell, cell, cell);
+    }
+    texture(cv, 50, 5);
+  };
+  if (reduce) { frame(0); return; }
+  const t0 = performance.now(); let lastDraw = 0;
+  const tick = now => { if (heroVisible && now - lastDraw > 55) { frame(((now - t0) / 10000) % 1); lastDraw = now; } heroRAF = requestAnimationFrame(tick); };
+  heroRAF = requestAnimationFrame(tick);
+  if (!heroObs && 'IntersectionObserver' in window) { heroObs = new IntersectionObserver(es => { heroVisible = es[0].isIntersecting; }); heroObs.observe(fr); }
 }
 let heroToken = 0;
 const imgCache = {};
