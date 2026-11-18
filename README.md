@@ -5,6 +5,7 @@ Graphics standards for the Ethereum Foundation and its clusters: Protocol, Acces
 ## Files
 - `index.html` – the style guide
 - `generator.html` – Pixel Grid Background Generator
+- `deck-builder.html` – presentation deck builder (pick Protocol, Access Layer or Public Sector)
 - `ef-logo.svg`, `logos/` – Ethereum Foundation and cluster logos used on the site
 - `logo-packs/` – downloadable logo packs per cluster (SVG + PNG, primary and secondary, dark and light)
 - `gallery/` – reference images
@@ -26,3 +27,6 @@ Open `index.html` in a browser.
 
 ## Pixel Grid Background Generator
 Open a cluster directly with a hash: `generator.html#protocol`, `#access-layer`, `#public-sector`.
+
+## Deck builder
+Open a cluster directly with a hash: `deck-builder.html#protocol`, `#access-layer`, `#public-sector`. The cluster can also be switched in the top bar; colours, photos and the footer follow.

@@ -395,7 +395,9 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
   <section class="sec" id="s6"><div class="page">
     <div class="sh row"><div class="num">6.0</div><h2>Applications</h2><div class="run"></div></div>
     <div class="row">
-      <div class="c-margin"><p class="intro">Deck cover, OG image and square post, generated from the tokens. Text never sits on pixels; the grid clears around every text block.</p></div>
+      <div class="c-margin"><p class="intro">Deck cover, OG image and square post, generated from the tokens. Text never sits on pixels; the grid clears around every text block.</p>
+        <p class="small grey" style="margin:0 0 10px;max-width:34ch">Build a full presentation in this cluster's branding.</p>
+        <div class="actions" style="margin-top:0"><a class="btn primary" id="deckLink" href="deck-builder.html#protocol" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the deck builder ↗</a></div></div>
       <div class="c-main">
         <div class="tpl-grid">
           <figure class="fig"><div class="tpl r169" id="tplCover"></div><figcaption class="cap"><b>Figure 6.1</b><span>Deck cover · 1920 × 1080</span></figcaption></figure>
@@ -970,6 +972,10 @@ const LOGO_PACK = {
   'access-layer':  { name:'Access Layer',  zip:'logo-packs/ef-access-layer-logos.zip' },
   'public-sector': { name:'Public Sector', zip:'logo-packs/ef-public-sector-logos.zip' }
 };
+function renderDeckLink(){
+  const id = current === 'base' ? 'protocol' : current;
+  $('deckLink').href = (standalone ? 'deck-builder.html' : 'https://claude.ai/artifact/244kevC31SfmCWYwwtSp6u') + '#' + id;
+}
 function renderLogotype(B){
   const L = LOGO_PACK[current];
   $('s1').hidden = !L || current === 'base';
@@ -1092,7 +1098,7 @@ function renderAll(resetGenerator = true){
   if (!brandIds().includes(current)) current = DEFAULT_ID;
   const B = resolve(current);
   applyTheme(B); renderSwitch(); renderToc(); renderHero(B); renderOverview(); renderColors(B);
-  renderLogotype(B); renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
+  renderLogotype(B); renderDeckLink(); renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
   if (resetGenerator || !genOpts) resetGen(); else { syncGenUI(); renderGen(); }
 }
 
