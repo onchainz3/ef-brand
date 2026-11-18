@@ -481,7 +481,7 @@ const LAYOUTS={
 cover:{name:'Cover',desc:'Date, big title and an agenda list',
   sizes:[{k:'title',l:'Title',d:68,min:30,max:140},{k:'body',l:'List text',d:26,min:12,max:48}],
   lists:[{key:'items',label:'Agenda items',min:0,max:5,make:()=>({t:'New agenda item'}),prev:o=>o.t}],
-  look:{bg:'@primary',grain:60,photo:{src:'@1',place:'right',width:46,x:55,y:50,dissolve:6,seed:5}},
+  look:{bg:'@navy',grain:60,photo:{src:'@1',place:'right',width:46,x:55,y:50,dissolve:6,seed:5}},
   sample:{date:'1–2 November 2026',title:'Mumbai L1\nR&D Workshop',items:[{t:'Glamsterdam Takeaways'},{t:'Hegotá Shipment Planning'},{t:'I* and Post-Quantum Roadmap'}]},
   render:(d,s,c)=>`<div class="cv"><div class="tagline">${ED(c,'date',d.date,'tag',{ph:'Date'})}</div>
     <div class="cv-t"><i class="bar"></i>${ED(c,'title',d.title,'h t-title',{ml:1,ph:'Title'})}</div>

@@ -10,7 +10,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300..800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@700..800&family=Funnel+Sans:wght@300..800&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a graphics standards manual. White paper, black type, a 12-column grid with a
    left margin column (columns 1–3) for section numbers and notes, content in columns 4–12.
@@ -180,6 +180,24 @@ select{width:100%;background:var(--paper);border:1px solid var(--faint);padding:
 .logo-tile figcaption{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;color:var(--grey)}
 .logo-tile figcaption b{color:var(--ink);font-weight:600}
 @media (max-width:640px){.logo-grid{grid-template-columns:1fr}}
+.dkc{display:block;position:relative;aspect-ratio:1456/819;overflow:hidden;border:1px solid var(--faint)}
+.dkc:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.dkc-in{position:absolute;left:0;top:0;width:1456px;height:819px;transform-origin:0 0;color:#FFFFFF;font-family:'Funnel Sans',sans-serif}
+.dkc-ph{position:absolute;right:0;top:0;bottom:0;overflow:hidden}
+.dkc-cv{position:absolute;left:199px;top:150px;width:640px}
+.dkc-tag{display:inline-block;padding-bottom:6px;border-bottom:2px solid;font-size:17px;letter-spacing:.09em;text-transform:uppercase;font-weight:500}
+.dkc-t{display:flex;gap:28px;margin:40px 0 34px;align-items:stretch}
+.dkc-t i{display:block;flex:none;width:28px}
+.dkc-t div{font-family:'Funnel Display','Funnel Sans',sans-serif;font-weight:800;font-size:68px;line-height:1.1;letter-spacing:-.0156em;padding-top:6px}
+.dkc-r{display:flex;align-items:center;gap:28px;margin-bottom:38px;font-size:26px;font-weight:600;line-height:1.2}
+.dkc-r i{display:block;flex:none;width:28px;height:28px}
+.dkc-ft i{position:absolute;left:0;bottom:16px;width:6px;height:30px}
+.dkc-lk{position:absolute;left:22px;bottom:15px;display:flex;align-items:center}
+.dkc-ft b{position:absolute;right:0;bottom:16px;height:30px;line-height:30px;padding:0 18px;font-size:15px;font-weight:600}
+#motionSlot .row{margin-top:56px}
+.mo{position:relative;aspect-ratio:16/9;border:1px solid var(--faint);overflow:hidden;display:block}
+.mo canvas{display:block;width:100%;height:100%}
+.mo:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 /* gallery */
 .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
 .gallery figure:first-child{grid-column:1/-1}
@@ -358,6 +376,7 @@ footer{border-top:1px solid var(--ink);padding-block:16px 32px;font-size:12px;co
     <div class="sh row"><div class="num">4.0</div><h2>Pixel grid backgrounds</h2><div class="run"></div></div>
     <div id="bgSlot"></div>
     <div class="row"><div class="c-margin"></div><div class="c-main"><div class="actions"><button class="btn" id="bgSave">Download this background · 1920 × 1080</button></div></div></div>
+    <div id="motionSlot"></div>
     <div class="row" hidden>
       <div class="c-main">
         <div class="gen">
@@ -459,6 +478,7 @@ const PRESETS = {
     voice:{ tone:'Technical and precise, for people building the protocol', sample:'Ship Hegotá together. Align on I* and PQ Ethereum.' },
     covers:{ title:'Mumbai L1 R&D Workshop', sub:'1–2 November 2026' },
     heroImage:['gallery/protocol-01.jpg','Domed station beside a river canyon'],
+    deckCover:{ img:'web/deck-gateway.jpg', pos:'55% 50%', date:'1–2 November 2026', title:'Mumbai L1\nR&D Workshop', items:['Glamsterdam Takeaways','Hegotá Shipment Planning','I* and Post-Quantum Roadmap'] },
     website:{ img:'web/protocol-mumbai.jpg', url:'https://protocol.ethereum.foundation/event/mumbai/', title:'Mumbai L1 R&D Workshop', desc:'Event site for the Protocol team: hero, schedule and travel information, built on the Protocol identity.' },
     gallery:[
       ['gallery/protocol-01.jpg','Domed station beside a river canyon'],
@@ -500,7 +520,9 @@ const PRESETS = {
       ['gallery/access-05.jpg','Moonlit garden terrace with a statue, stairs and a floating city','Reference worlds','4/5'],
       ['gallery/access-06.jpg','Blossom-covered stone stair under lantern-lit arches','Reference worlds','4/5']
     ],
-    deck:[
+    deckCover:{ img:'gallery/access-01.jpg', pos:'55% 50%', date:'An introduction', title:'Applications\nEnablement', items:['Who we are','How we work','What you can expect of us'] },
+    /* full PDF deck pages, kept for reference; the page shows only the cover */
+    deckPages:[
       ['deck/access-layer-01.jpg','Applications Enablement — cover'],
       ['deck/access-layer-02.jpg','Ethereum reaches users through your products'],
       ['deck/access-layer-03.jpg','The Foundation\'s role'],
@@ -525,6 +547,7 @@ const PRESETS = {
     image:{ world:'Civic architecture: gardens, squares, domes.', treatment:'Soft full-colour illustration, no crypto imagery.', mask:'Rounded cluster cut-outs, never aggressive.' },
     voice:{ tone:'Institutional and clear, no jargon', sample:'Digital public infrastructure, sovereign by design.' },
     covers:{ title:'Digital public infrastructure', sub:'Sovereign by design' },
+    deckCover:{ img:'gallery/public-01.jpg', pos:'55% 50%', date:'Ethereum for public infrastructure', title:'Digital public\ninfrastructure', items:['Sovereign by design','Verifiable records','Coordination without a central operator'] },
     website:{ img:'web/public-sector.jpg', url:'https://publicsector.ethereum.foundation/', title:'Ethereum for digital public infrastructure', desc:'Public Sector website for governments, multilateral organisations and NGOs, built on the Public Sector identity.' },
     gallery:[
       ['gallery/public-01.jpg','Market square with a fountain above the lake','Reference worlds','16/9'],
@@ -705,7 +728,7 @@ function loadLogo(){
       if (!inner) return;
       sprite.insertAdjacentHTML('beforeend', `<symbol id="logo-${id}" viewBox="${vb}">${inner}</symbol>`);
       logoBox[id] = vb;
-      const B = resolve(current); renderLockup(B); renderTemplates(B); if (current === 'base') renderOverview();
+      const B = resolve(current); renderLockup(B); renderTemplates(B); if (current === 'base') renderOverview(); else if (id === current) renderImagery(B);
     }).catch(() => {});
   });
 }
@@ -906,7 +929,7 @@ function backgroundsFor(id){
     drawPixels(cv, 1280, 720, bgOpts(B, v, i, 1280 / 1920));
     texture(cv, 50, i + 1);
     const name = v.mode.charAt(0).toUpperCase() + v.mode.slice(1);
-    return [cv.toDataURL('image/png'), `${name} · ${v.size} px · ${v.density}% · ${KEY_NAMES[v.fg]} on ${KEY_NAMES[v.bg]}`, 'Backgrounds', '16/9', 'bg'];
+    return [cv.toDataURL('image/png'), `${name} · ${v.size} px · ${v.density}% · ${KEY_NAMES[v.fg]} on ${KEY_NAMES[v.bg]}`, 'Static backgrounds', '16/9', 'bg'];
   });
   return bgCache[id];
 }
@@ -932,10 +955,10 @@ function renderImagery(B){
     /* on claude.ai the generator is its own artifact; on GitHub Pages it sits next to index.html */
     const gen = (standalone ? 'generator.html' : 'https://claude.ai/artifact/Mdf8oSPPP1WMyaFBK9tNbq') + '#' + (current === 'base' ? 'protocol' : current);
     const meta = grp.bg
-      ? `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">Ten ready-made backgrounds in this cluster's colours. Download one, or make your own.</span></div>
+      ? `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">Ten ready-made still backgrounds in this cluster's colours. Download one, or make your own.</span></div>
          <div class="actions" style="margin:14px 0 18px"><a class="btn primary" id="genLink" href="${gen}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the generator ↗</a></div>
          <p class="small" style="border-top:1px solid var(--strong);padding-top:8px;margin:0;max-width:34ch"><b>Legibility rule.</b> Keep text, logos and images on solid ground, never on pixels.</p>`
-      : `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">${grp.items.length} ${unit}. Click a thumbnail to show it large; click the large ${grp.deck ? 'page' : 'image'} to view it full size.</span></div>`;
+      : `<div class="ss-meta"><span class="label">${label} ${esc(grp.name)}</span><span class="small grey">${grp.items.length} ${unit}. Click a thumbnail to show it large; click the large ${grp.deck ? 'page' : 'image'} to view it full size.</span></div>${grp.deck ? `<div class="actions" style="margin:14px 0 0"><a class="btn primary" href="${(standalone ? 'deck-builder.html' : 'https://claude.ai/artifact/244kevC31SfmCWYwwtSp6u') + '#' + (current === 'base' ? 'protocol' : current)}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the deck builder ↗</a></div>` : ''}`;
     return `<div class="row ss-row">
       <div class="c-margin">${meta}</div>
       <div class="c-main"><div class="ss${ah > aw ? ' tall' : ''}" data-g="${gi}" style="--ar:${ar}">
@@ -949,13 +972,14 @@ function renderImagery(B){
   $('bgSlot').innerHTML = ssGroups.map((g, gi) => g.bg ? row(g, gi) : '').join('');
   const imgHtml = ssGroups.map((g, gi) => (g.deck || g.bg) ? '' : row(g, gi)).join('');
   $('gallery').innerHTML = imgHtml || `<div class="row"><div class="c-margin"></div><div class="c-main"><p class="empty">No reference images for ${esc(displayName(current))} yet.</p></div></div>`;
-  $('deckSlot').innerHTML = ssGroups.map((g, gi) => g.deck ? row(g, gi) : '').join('');
+  $('deckSlot').innerHTML = ssGroups.map((g, gi) => g.deck ? row(g, gi) : '').join('') || deckCoverRow(B);
+  fitDeckCovers();
 }
 
 function renderWebsite(B){
   const w = B.website;
   if (!w) { $('webSlot').innerHTML = ''; return; }
-  const num = `6.${(B.deck && B.deck.length) ? 3 : 2}`;
+  const num = `6.${((B.deck && B.deck.length) || B.deckCover) ? 3 : 2}`;
   const host = w.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('webSlot').innerHTML = `<div class="row">
     <div class="c-margin"><div class="ss-meta"><span class="label">${num} Website</span><span class="small grey">${esc(w.desc)}</span></div>
@@ -984,6 +1008,76 @@ function renderLogotype(B){
   $('logoGrid').innerHTML = tiles.map(([kind, tone, bg], i) => `<figure class="logo-tile">
     <div class="lt" style="background:${B.color[bg]}"><img src="logo-packs/${current}/${esc(L.name)} - ${kind} - ${tone}.png" alt="${esc(L.name)} ${kind.toLowerCase()} logo for ${bg} backgrounds" loading="lazy"></div>
     <figcaption><span><b>1.${i+1}</b> ${kind}</span><span>On ${bg} backgrounds</span></figcaption></figure>`).join('');
+}
+
+/* 6.2 Presentation deck for clusters without a PDF deck: the deck builder's cover, rebuilt live at 1456 × 819 and scaled */
+function hash2(a,b,c){let h=(Math.imul(a|0,374761393)+Math.imul(b|0,668265263)+Math.imul(c|0,1274126177))|0;h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return(h>>>0)/4294967296}
+function dissolveMask(W,cell,dis,seed){const cols=Math.max(2,Math.round(W/cell)),rows=Math.max(2,Math.round(819/cell));let rs='';
+  for(let r=0;r<rows;r++){const wob=.55+.9*hash2(seed,r,999);
+    for(let c=0;c<cols;c++){const d=c;const reach=Math.max(.5,dis*wob);const pr=d>=reach?1:Math.pow((d+.5)/reach,1.5);if(hash2(seed,r,c)<pr)rs+=`<rect x="${c}" y="${r}" width="1" height="1"/>`}}
+  const u=`url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cols} ${rows}" preserveAspectRatio="none" shape-rendering="crispEdges">${rs}</svg>`)}')`;
+  return `-webkit-mask-image:${u};mask-image:${u};-webkit-mask-size:100% 100%;mask-size:100% 100%`}
+function deckCoverRow(B){
+  const D = B.deckCover; if (!D) return '';
+  const ac = B.color.accent, ink = lum(ac) > .5 ? B.color.dark : '#FFFFFF', W = 1456 * .46;
+  const href = (standalone ? 'deck-builder.html' : 'https://claude.ai/artifact/244kevC31SfmCWYwwtSp6u') + '#' + (current === 'base' ? 'protocol' : current);
+  const lock = logoBox[current] ? `<svg viewBox="${logoBox[current]}" style="height:32px;width:auto;color:#FFFFFF;opacity:.85"><use href="#logo-${current}"/></svg>` : '';
+  return `<div class="row ss-row">
+    <div class="c-margin"><div class="ss-meta"><span class="label">6.2 Presentation deck</span><span class="small grey">The cover of this cluster's deck. Open the deck builder to make a full presentation in this branding.</span></div>
+      <div class="actions" style="margin:14px 0 0"><a class="btn primary" href="${href}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the deck builder ↗</a></div></div>
+    <div class="c-main"><a class="dkc" href="${href}" target="_blank" rel="noopener" aria-label="Open the deck builder"><div class="dkc-in" style="background:${B.color.dark}">
+      <div class="dkc-ph" style="width:46%;${dissolveMask(W,46,6,5)}"><div style="position:absolute;inset:0;background:url('${D.img}') ${D.pos || '55% 50%'}/cover no-repeat"></div></div>
+      <div class="dkc-cv"><div class="dkc-tag" style="border-color:${ac}">${esc(D.date)}</div>
+        <div class="dkc-t"><i style="background:${ac}"></i><div>${esc(D.title).replace(/\n/g,'<br>')}</div></div>
+        ${D.items.map(t => `<div class="dkc-r"><i style="background:${ac}"></i>${esc(t)}</div>`).join('')}</div>
+      <div class="dkc-ft"><i style="background:${ac}"></i><span class="dkc-lk">${lock}</span><b style="background:${ac};color:${ink}">01</b></div>
+    </div></a><figcaption class="cap" style="display:grid"><b>Figure 6.2</b><span>Deck cover · 1456 × 819</span></figcaption></div>
+  </div>`;
+}
+function fitDeckCovers(){ document.querySelectorAll('.dkc').forEach(el => { const k = el.clientWidth / 1456; el.firstElementChild.style.transform = `scale(${k})`; }); }
+addEventListener('resize', fitDeckCovers);
+
+/* 4.2 Motion backgrounds: a live loop of the pixel dissolve over the cluster's key visual (same field as the motion generator's "Random dissolve") */
+function vnoise(u,w,seed){const ix=Math.floor(u),iy=Math.floor(w),fx=u-ix,fy=w-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);
+  const a=hash2(ix,iy,seed),b=hash2(ix+1,iy,seed),c=hash2(ix,iy+1,seed),d=hash2(ix+1,iy+1,seed);return a+(b-a)*sx+(c-a)*sy+(a-b-c+d)*sx*sy}
+let motionRAF = 0, motionVisible = true;
+function renderMotion(B){
+  cancelAnimationFrame(motionRAF);
+  const slot = $('motionSlot'); if (!slot) return;
+  if (current === 'base') { slot.innerHTML = ''; return; }
+  const img = (B.heroImage && B.heroImage[0]) || (B.gallery && B.gallery[0] && B.gallery[0][0]);
+  const href = (standalone ? 'motion-generator.html' : 'https://claude.ai/artifact/QetP6deeAAnxaWguofwXXK') + '#' + current;
+  slot.innerHTML = `<div class="row ss-row">
+    <div class="c-margin"><div class="ss-meta"><span class="label">4.2 Motion backgrounds</span><span class="small grey">Seamless pixel loops for event intros, break screens and video. Pick a template, tune the motion and record a video in this cluster's colours.</span></div>
+      <div class="actions" style="margin:14px 0 0"><a class="btn primary" href="${href}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Open the motion generator ↗</a></div></div>
+    <div class="c-main"><a class="mo" href="${href}" target="_blank" rel="noopener" aria-label="Open the motion generator"><canvas id="moCv" width="960" height="540"></canvas></a>
+      <figcaption class="cap" style="display:grid"><b>Figure 4.2</b><span>Random dissolve · dark pixels over the key visual · 8 s loop</span></figcaption></div>
+  </div>`;
+  const cv = $('moCv'), ctx = cv.getContext('2d'), W = cv.width, H = cv.height, cell = 22, cols = Math.ceil(W / cell), rows = Math.ceil(H / cell);
+  const im = new Image(); let ready = false; im.onload = () => { ready = true; }; im.src = img;
+  const dark = B.color.dark, TAU = Math.PI * 2, last = cols - 1, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const frame = p => {
+    ctx.fillStyle = dark; ctx.fillRect(0, 0, W, H);
+    if (ready) { const s = Math.max(W / im.naturalWidth, H / im.naturalHeight), dw = im.naturalWidth * s, dh = im.naturalHeight * s; ctx.drawImage(im, (W - dw) / 2, (H - dh) / 2, dw, dh); }
+    const w = [0, 1, 2].map(m => .5 + .5 * Math.sin(TAU * (p + m / 3)));
+    ctx.fillStyle = dark;
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const x = i / 3, y = j / 3;
+      const n = (w[0] * vnoise(x, y, 21) + w[1] * vnoise(x + 37.1, y + 11.3, 22) + w[2] * vnoise(x - 19.7, y + 53.9, 23)) / 1.5;
+      const k = 2 + Math.floor(hash2(i, j, 32) * 3), f = .5 + .5 * Math.sin(TAU * (k * p + hash2(i, j, 31)));
+      let v = Math.min(1, Math.max(0, (n - .5) * 3.2 + .5)) * .75 + f * .25;
+      if (.5 + (.55 + .48 * (v - .5) - i / last) * 4 > .5) ctx.fillRect(i * cell, j * cell, cell, cell);
+    }
+    texture(cv, 50, 3);
+  };
+  let t0 = performance.now(), lastDraw = 0;
+  const tick = now => {
+    if (motionVisible && now - lastDraw > 60) { frame(((now - t0) / 8000) % 1); lastDraw = now; }
+    motionRAF = requestAnimationFrame(tick);
+  };
+  if (reduce) { im.onload = () => { ready = true; frame(0); }; frame(0); }
+  else motionRAF = requestAnimationFrame(tick);
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { motionVisible = es[0].isIntersecting; }).observe(cv);
 }
 let figNums = [], ssGroups = [];
 function setSlide(gi, n){
@@ -1098,7 +1192,7 @@ function renderAll(resetGenerator = true){
   if (!brandIds().includes(current)) current = DEFAULT_ID;
   const B = resolve(current);
   applyTheme(B); renderSwitch(); renderToc(); renderHero(B); renderOverview(); renderColors(B);
-  renderLogotype(B); renderDeckLink(); renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
+  renderLogotype(B); renderDeckLink(); renderMotion(B); renderHighlights(B); renderImagery(B); renderWebsite(B); renderTemplates(B);
   if (resetGenerator || !genOpts) resetGen(); else { syncGenUI(); renderGen(); }
 }
 
